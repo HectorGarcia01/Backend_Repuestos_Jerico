@@ -1,6 +1,7 @@
 const { PORT } = require('./config/config');
 const express = require('express');
 const db = require('./database/db_connection');
+const inventroryRoutes = require('./routes/inventory.routes');
 
 const app = express();
 
@@ -24,6 +25,9 @@ app.use((req, res, next) => {
 });
 
 app.use(express.json());
+
+//Configuración de rutas (endpoints)
+app.use(inventroryRoutes);
 
 //Configuración del manejo de rutas inexistentes
 app.get('*', (req, res) => {
