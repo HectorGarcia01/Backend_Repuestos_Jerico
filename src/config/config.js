@@ -1,4 +1,4 @@
-require('dotenv').config({ path: `.local.env` });
+require('dotenv').config({ path: `.dev.env` });
 
 //Exportando las variables de entorno
 module.exports = {
