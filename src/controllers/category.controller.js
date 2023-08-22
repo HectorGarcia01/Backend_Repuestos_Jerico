@@ -3,7 +3,7 @@ const categoryModel = require('../models/category');
 
 /**
  * Función para Registrar una nueva categoría
- * Fecha creación: 05/08/2023
+ * Fecha creación: 22/08/2023
  * Autor: Hector Armando García González
  * Referencias: 
  *              Modelo Categoría (category.js), 
@@ -25,6 +25,29 @@ const addCategory = async (req, res) => {
     }
 };
 
+/**
+ * Función para ver todas las categorías
+ * Fecha creación: 22/08/2023
+ * Autor: Hector Armando García González
+ * Referencias:
+ *              Modelo Categoría (category.js), 
+ */
+
+const readCategories = async (req, res) => {
+    try {
+        const categories = await categoryModel.findAll({});
+
+        if (categories.length === 0) {
+            return res.status(404).send({ error: "No hay categorías registradas." });
+        }
+
+        res.status(200).send({ categories });
+    } catch (error) {
+        res.status(500).send({ errr: "Error interno del servidor.", error });
+    }
+};
+
 module.exports = {
-    addCategory
+    addCategory,
+    readCategories
 };
