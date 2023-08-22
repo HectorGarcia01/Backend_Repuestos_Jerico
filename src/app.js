@@ -1,7 +1,18 @@
 const { PORT } = require('./config/config');
 const express = require('express');
+const db = require('./database/db_connection');
 
 const app = express();
+
+//Conexión a la base de datos
+(async () => {
+    try {
+        await db.authenticate();
+        await db.sync();
+    } catch (error) {
+        throw new Error(error);
+    }
+})();
 
 //Configuración de cors
 app.use((req, res, next) => {
