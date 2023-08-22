@@ -2,7 +2,24 @@ const Joi = require('joi');
 const customError = require('../utils/custom_error');
 
 /**
- * Esquema de validación de datos de Inventario (Categoría y Producto)
+ * Esquema de validación de datos de Categoría
+ * Fecha creación: 22/08/2023
+ * Autor: Hector Armando García González
+ * Referencias: 
+ *              custom_error.js (para errores personalizados)
+ */
+
+const categorySchema = Joi.object({
+    nombre_categoria: Joi.string()
+        .required()
+        .trim()
+        .error((error) => {
+            return customError("El nombre de categoría es obligatorio.", error);
+        })
+});
+
+/**
+ * Esquema de validación de datos de Inventario (Productos)
  * Fecha creación: 22/08/2023
  * Autor: Hector Armando García González
  * Referencias: 
@@ -10,13 +27,6 @@ const customError = require('../utils/custom_error');
  */
 
 const inventorySchema = Joi.object({
-    //Para categoría
-    nombre_categoria: Joi.string()
-        .required()
-        .trim()
-        .error((error) => {
-            return customError("El nombre de categoría es obligatorio.", error);
-        }),
     //Para producto
     nombre_producto: Joi.string()
         .required()
@@ -42,9 +52,12 @@ const inventorySchema = Joi.object({
         .integer()
         .required()
         .error((error) => {
-            return customError("La cantidad del producto es obligatoria y debe de ser numérico.", error);
+            return customError("La cantidad del producto es obligatoria y debe de ser numérica.", error);
         })
 });
 
 //Exportación del esquema de validación
-module.exports = inventorySchema;
+module.exports = {
+    categorySchema,
+    inventorySchema
+};
