@@ -11,9 +11,9 @@ const CategoryModel = require('../models/category');
 
 const addCategory = async (req, res) => {
     try {
-        const { nombre_categoria } = req.body;
+        const { nombre_categoria, descripcion_categoria } = req.body;
 
-        const newCategory = await CategoryModel.create({ nombre_categoria });
+        const newCategory = await CategoryModel.create({ nombre_categoria, descripcion_categoria });
 
         res.status(201).send({ msg: "Se ha registrado una nueva categoría.", newCategory })
     } catch (error) {
