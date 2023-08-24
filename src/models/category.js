@@ -9,8 +9,13 @@ const db = require('../database/db_connection');
 
 const Category = db.define('Categoria', {
     nombre_categoria: {
-        type: DataTypes.STRING,
-        allowNull: false
+        type: DataTypes.STRING(30),
+        allowNull: false,
+        unique: true
+    },
+    descripcion_categoria: {
+        type: DataTypes.STRING(40),
+        allowNull: true
     }
 });
 
