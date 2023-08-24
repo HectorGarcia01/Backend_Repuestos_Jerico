@@ -1,5 +1,5 @@
 const Sequelize = require('sequelize');
-const categoryModel = require('../models/category');
+const CategoryModel = require('../models/category');
 
 /**
  * Función para Registrar una nueva categoría
@@ -13,7 +13,7 @@ const addCategory = async (req, res) => {
     try {
         const { nombre_categoria } = req.body;
 
-        const newCategory = await categoryModel.create({ nombre_categoria });
+        const newCategory = await CategoryModel.create({ nombre_categoria });
 
         res.status(201).send({ msg: "Se ha registrado una nueva categoría.", newCategory })
     } catch (error) {
@@ -35,7 +35,7 @@ const addCategory = async (req, res) => {
 
 const readCategories = async (req, res) => {
     try {
-        const categories = await categoryModel.findAll({});
+        const categories = await CategoryModel.findAll({});
 
         if (categories.length === 0) {
             return res.status(404).send({ error: "No hay categorías registradas." });
