@@ -3,6 +3,7 @@ const express = require('express');
 const db = require('./database/db_connection');
 const seedData = require('./controllers/seed_data.controller');
 const customerRoutes = require('./routes/customer.routes');
+const employeeRoutes = require('./routes/employee.routes');
 const inventroryRoutes = require('./routes/inventory.routes');
 
 const app = express();
@@ -31,6 +32,7 @@ app.use(express.json());
 
 //Configuración de rutas (endpoints)
 app.use(customerRoutes);
+app.use(employeeRoutes);
 app.use(inventroryRoutes);
 
 //Configuración del manejo de rutas inexistentes
