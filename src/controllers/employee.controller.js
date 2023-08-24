@@ -87,6 +87,31 @@ const createEmployee = async (req, res) => {
     }
 };
 
+/**
+ * Función para ver el perfil del empleado
+ * Fecha creación: 22/08/2023
+ * Autor: Hector Armando García González
+ * Referencias:
+ *              Modelo Direccion (address.js)
+ */
+
+const readProfile = async (req, res) => {
+    try {
+        const { user } = req;
+
+        const addressEmployee = await AddressModel.findOne({
+            where: {
+                ID_Empleado_FK: user.id
+            }
+        });
+
+        res.status(200).send({ employee: user, addressEmployee });
+    } catch (error) {
+        res.status(500).send({ error: "Error interno del servidor." });
+    }
+};
+
 module.exports = {
-    createEmployee
+    createEmployee,
+    readProfile
 };
