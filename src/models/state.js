@@ -9,7 +9,7 @@ const db = require('../database/db_connection');
 
 const Estado = db.define('Estado', {
     Tipo_Estado: {
-        type: DataTypes.STRING,
+        type: DataTypes.STRING(9),
         allowNull: false,
         unique: true,
         values: ['Pendiente', 'Activo', 'Inactivo'],
