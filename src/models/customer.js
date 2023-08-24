@@ -83,7 +83,7 @@ Cliente.beforeCreate(async (customer) => {
 Cliente.prototype.generateAuthToken = (id, role) => {
     const token = jwt.sign({ id: id.toString(), role }, KEY_TOKEN);
     return token;
-}
+};
 
 /**
  * Método personalizado para validar credenciales
