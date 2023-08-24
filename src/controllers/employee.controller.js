@@ -111,7 +111,39 @@ const readProfile = async (req, res) => {
     }
 };
 
+/**
+ * Función para actualizar datos del Empleado
+ * Fecha creación: 22/08/2023
+ * Autor: Hector Armando García González
+ * Referencias: 
+ *              Modelo Direccion (address.js)
+ */
+
+const updateEmployee = async (req, res) => {
+    try {
+        const { user } = req;
+        const updates = Object.keys(req.body);
+
+        const allowedUpdates = ['nombre', 'apellido', 'telefono', 'nit', 'departamento', 'municipio', 'direccion_referencia'];
+        const isValidOperation = updates.every((update) => allowedUpdates.includes(update));
+
+        if (!isValidOperation) {
+            return res.status(400).send({ error: '¡Actualización inválida!' });
+        }
+
+        updates.forEach((update) => user[update] = req.body[update]);
+
+        //Aún queda pendiente lo de actualizar la dirección ***********************************
+
+        await user.save();
+        res.status(200).send({ msg: "Datos actualizados con éxito." });
+    } catch (error) {
+        res.status(500).send({ error: "Error interno del servidor." });
+    }
+};
+
 module.exports = {
     createEmployee,
-    readProfile
+    readProfile,
+    updateEmployee
 };
