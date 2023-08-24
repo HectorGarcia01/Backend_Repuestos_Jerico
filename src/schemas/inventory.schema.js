@@ -15,7 +15,9 @@ const categorySchema = Joi.object({
         .trim()
         .error((error) => {
             return customError("El nombre de categoría es obligatorio.", error);
-        })
+        }),
+    descripcion_categoria: Joi.string()
+        .trim()
 });
 
 /**
