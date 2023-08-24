@@ -87,6 +87,31 @@ const createCustomer = async (req, res) => {
     }
 };
 
+/**
+ * Función para ver el perfil del cliente
+ * Fecha creación: 22/08/2023
+ * Autor: Hector Armando García González
+ * Referencias:
+ *              Modelo Direccion (address.js)
+ */
+
+const readProfile = async (req, res) => {
+    try {
+        const { user } = req;
+
+        const addressCustomer = await AddressModel.findOne({
+            where: {
+                ID_Cliente_FK: user.id
+            }
+        });
+
+        res.status(200).send({ customer: user, addressCustomer });
+    } catch (error) {
+        res.status(500).send({ error: "Error interno del servidor." });
+    }
+};
+
 module.exports = {
-    createCustomer
+    createCustomer,
+    readProfile
 };
