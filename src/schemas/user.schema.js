@@ -51,7 +51,7 @@ const userSchema = Joi.object({
             return customError("La contraseña es obligatoria y debe tener al menos 8 carácteres, al menos una letra mayúscula, una letra minúscula, un número y no puede contener espacios.", error);
         }),
     repetir_password: Joi.string()
-        .valid(Joi.ref('Password_Cliente'))
+        .valid(Joi.ref('password'))
         .required()
         .error((error) => {
             return customError("Las contraseñas no coinciden.", error);
