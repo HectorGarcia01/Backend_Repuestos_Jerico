@@ -4,6 +4,7 @@ const db = require('./database/db_connection');
 const seedData = require('./controllers/seed_data.controller');
 const customerRoutes = require('./routes/customer.routes');
 const employeeRoutes = require('./routes/employee.routes');
+const authRoutes = require('./routes/auth.routes');
 const inventroryRoutes = require('./routes/inventory.routes');
 
 const app = express();
