@@ -9,9 +9,10 @@ const db = require('../database/db_connection');
 
 const Rol = db.define('Rol', {
     nombre_rol: {
-        type: DataTypes.STRING,
+        type: DataTypes.STRING(10),
         allowNull: false,
-        values: ['User', 'Admin', 'SuperAdmin']
+        values: ['User', 'Admin', 'SuperAdmin'],
+        unique: true
     }
 });
 
