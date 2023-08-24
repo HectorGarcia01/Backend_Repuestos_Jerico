@@ -1,6 +1,8 @@
 const { PORT } = require('./config/config');
 const express = require('express');
 const db = require('./database/db_connection');
+const seedData = require('./controllers/seed_data.controller');
+const customerRoutes = require('./routes/customer.routes');
 const inventroryRoutes = require('./routes/inventory.routes');
 
 const app = express();
@@ -10,6 +12,7 @@ const app = express();
     try {
         await db.authenticate();
         await db.sync();
+        await seedData();
     } catch (error) {
         throw new Error(error);
     }
@@ -27,6 +30,7 @@ app.use((req, res, next) => {
 app.use(express.json());
 
 //Configuración de rutas (endpoints)
+app.use(customerRoutes);
 app.use(inventroryRoutes);
 
 //Configuración del manejo de rutas inexistentes
