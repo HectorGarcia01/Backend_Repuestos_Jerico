@@ -37,7 +37,7 @@ const Cliente = db.define('Cliente', {
         unique: true
     },
     password: {
-        type: DataTypes.STRING(25),
+        type: DataTypes.STRING,
         allowNull: false
     },
     foto_perfil: {
