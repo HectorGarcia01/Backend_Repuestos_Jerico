@@ -8,7 +8,7 @@ const db = require('../database/db_connection');
  */
 
 const Estado = db.define('Estado', {
-    Tipo_Estado: {
+    nombre_estado: {
         type: DataTypes.STRING(9),
         allowNull: false,
         unique: true,
