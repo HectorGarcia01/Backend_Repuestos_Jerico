@@ -15,11 +15,15 @@ const loginSchema = Joi.object({
         .required()
         .trim()
         .error((error) => {
-            return customError("Correo inválido.", error);
+            return customError("El correo es obligatorio y debe de ser válido.", error);
         }),
     password: Joi.string()
         .required()
         .trim()
+        .error((error) => {
+            return customError("La contraseña es obligatoria.", error);
+        }),
+    
 });
 
 //Exportación del esquema de validación para el login
