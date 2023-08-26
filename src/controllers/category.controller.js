@@ -18,7 +18,7 @@ const addCategory = async (req, res) => {
         res.status(201).send({ msg: "Se ha registrado una nueva categoría.", newCategory })
     } catch (error) {
         if (error instanceof Sequelize.UniqueConstraintError) {
-            res.status(400).send({ error: "¡El usuario ya existe!" });
+            res.status(400).send({ error: "¡La categoría ya existe!" });
         } else {
             res.status(500).send({ errors: "Error interno del servidor." });
         }
