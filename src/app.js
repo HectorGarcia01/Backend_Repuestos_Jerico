@@ -36,6 +36,7 @@ app.use(express.json());
 app.use(customerRoutes);
 app.use(employeeRoutes);
 app.use(authRoutes);
+app.use(supplierRoutes);
 app.use(inventroryRoutes);
 
 //Configuración del manejo de rutas inexistentes
