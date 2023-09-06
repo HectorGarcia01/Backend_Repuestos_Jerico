@@ -121,9 +121,42 @@ const updateCategoryId = async (req, res) => {
     }
 };
 
+/**
+ * Función para eliminar lógicamente a una categoría por id
+ * Fecha creación: 24/08/2023
+ * Autor: Hector Armando García González
+ * Referencias:
+ *              Modelo Categoría (category.js),
+ *              Modelo Estado (state.js)
+ */
+
+const deleteCategoryId = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const category = await CategoryModel.findByPk(id);
+
+        if (!category) {
+            return res.status(404).send({ error: "Categoría no encontrada." });
+        }
+
+        const stateCategory = await StateModel.findOne({
+            where: {
+                Tipo_Estado: "Inactivo"
+            }
+        });
+
+        category.ID_Estado_FK = stateCategory.id;
+        await category.save();
+        res.status(200).send({ msg: "Categoría eliminada con éxito." });
+    } catch (error) {
+        res.status(500).send({ error: "Error interno del servidor." });
+    }
+};
+
 module.exports = {
     createCategory,
     readCategories,
     readCategoryId,
     updateCategoryId,
+    deleteCategoryId
 };
