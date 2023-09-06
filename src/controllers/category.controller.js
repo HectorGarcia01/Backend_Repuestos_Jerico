@@ -86,8 +86,44 @@ const readCategoryId = async (req, res) => {
     }
 };
 
+/**
+ * Función para actualizar categoría por id
+ * Fecha creación: 02/09/2023
+ * Autor: Hector Armando García González
+ * Referencias:
+ *              Modelo Categoría (category.js)
+ */
+
+const updateCategoryId = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const updates = Object.keys(req.body);
+
+        const allowedUpdates = ['nombre_categoria', 'descripcion_categoria'];
+        const isValidOperation = updates.every((update) => allowedUpdates.includes(update));
+
+        if (!isValidOperation) {
+            return res.status(400).send({ error: '¡Actualización inválida!' });
+        }
+
+        const category = await CategoryModel.findByPk(id);
+
+        if (!category) {
+            return res.status(404).send({ error: "Categoría no encontrada." });
+        }
+
+        updates.forEach((update) => category[update] = req.body[update]);
+
+        await category.save();
+        res.status(200).send({ msg: "Datos actualizados con éxito." });
+    } catch (error) {
+        res.status(500).send({ error: "Error interno del servidor." });
+    }
+};
+
 module.exports = {
     createCategory,
     readCategories,
-    readCategoryId
+    readCategoryId,
+    updateCategoryId,
 };
