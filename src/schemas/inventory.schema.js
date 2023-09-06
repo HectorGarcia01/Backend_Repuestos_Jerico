@@ -21,6 +21,27 @@ const categorySchema = Joi.object({
 });
 
 /**
+ * Esquema de validación de actualización de datos de Categoría
+ * Fecha creación: 02/09/2023
+ * Autor: Hector Armando García González
+ * Referencias: 
+ *              custom_error.js (para errores personalizados)
+ */
+
+const updateCategorySchema = Joi.object({
+    nombre_categoria: Joi.string()
+        .trim()
+        .error((error) => {
+            return customError("Nombre de categoría inválido.", error);
+        }),
+    descripcion_categoria: Joi.string()
+        .trim()
+        .error((error) => {
+            return customError("Descripción de categoría inválido.", error);
+        }),
+});
+
+/**
  * Esquema de validación de datos de Inventario (Productos)
  * Fecha creación: 22/08/2023
  * Autor: Hector Armando García González
@@ -61,5 +82,6 @@ const inventorySchema = Joi.object({
 //Exportación del esquema de validación
 module.exports = {
     categorySchema,
+    updateCategorySchema,
     inventorySchema
 };
