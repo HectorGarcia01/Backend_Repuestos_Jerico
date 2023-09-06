@@ -71,7 +71,31 @@ const readSuppliers = async (req, res) => {
     }
 };
 
+/**
+ * Función para ver un proveedor por ID
+ * Fecha creación: 02/09/2023
+ * Autor: Hector Armando García González
+ * Referencias:
+ *              Modelo Proveedor (supplier.js),
+ */
+
+const readSupplierId = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const supplier = await SupplierModel.findByPk(id);
+
+        if (!supplier) {
+            return res.status(404).send({ error: "Proveedor no encontrado." });
+        }
+
+        res.status(200).send({ supplier });
+    } catch (error) {
+        res.status(500).send({ error: "Error interno del servidor." });
+    }
+};
+
 module.exports = {
     createSupplier,
-    readSuppliers
+    readSuppliers,
+    readSupplierId
 };
