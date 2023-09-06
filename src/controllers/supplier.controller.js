@@ -164,5 +164,7 @@ const deleteSupplierId = async (req, res) => {
 module.exports = {
     createSupplier,
     readSuppliers,
-    readSupplierId
+    readSupplierId,
+    updateSupplierId,
+    deleteSupplierId
 };
