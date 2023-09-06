@@ -48,6 +48,30 @@ const createSupplier = async (req, res) => {
     }
 };
 
+/**
+ * Función para ver todos los proveedores
+ * Fecha creación: 02/09/2023
+ * Autor: Hector Armando García González
+ * Referencias:
+ *              Modelo Proveedor (supplier.js),
+ *              Modelo Estado (state.js)
+ */
+
+const readSuppliers = async (req, res) => {
+    try {
+        const suppliers = await SupplierModel.findAll({});
+
+        if (suppliers.length === 0) {
+            return res.status(404).send({ error: "No hay proveedores." });
+        }
+
+        res.status(200).send({ suppliers });
+    } catch (error) {
+        res.status(500).send({ error: "Error interno del servidor." });
+    }
+};
+
 module.exports = {
-    createSupplier
+    createSupplier,
+    readSuppliers
 };
