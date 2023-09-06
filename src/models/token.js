@@ -32,5 +32,4 @@ const Token = db.define('Token', {
     }
 });
 
-//Exportación del modelo Token
 module.exports = Token;
