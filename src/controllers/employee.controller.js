@@ -165,9 +165,33 @@ const readEmployees = async (req, res) => {
     }
 };
 
+/**
+ * Función para ver un empleado por ID
+ * Fecha creación: 16/08/2023
+ * Autor: Hector Armando García González
+ * Referencias:
+ *              Modelo Empleado (employee.js),
+ */
+
+const readEmployeeId = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const employee = await EmployeeModel.findByPk(id);
+
+        if (!employee) {
+            return res.status(404).send({ error: "Empleado no encontrado." });
+        }
+
+        res.status(200).send({ employee });
+    } catch (error) {
+        res.status(500).send({ error: "Error interno del servidor." });
+    }
+};
+
 module.exports = {
     createEmployee,
     readProfile,
     updateEmployee,
-    readEmployees
+    readEmployees,
+    readEmployeeId
 };
