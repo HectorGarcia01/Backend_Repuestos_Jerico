@@ -188,10 +188,43 @@ const readEmployeeId = async (req, res) => {
     }
 };
 
+/**
+ * Función para eliminar lógicamente a un empleado por id
+ * Fecha creación: 02/09/2023
+ * Autor: Hector Armando García González
+ * Referencias:
+ *              Modelo Empleado (employee.js),
+ *              Modelo Estado (state.js)
+ */
+
+const deleteEmployeeId = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const employee = await EmployeeModel.findByPk(id);
+
+        if (!employee) {
+            return res.status(404).send({ error: "Empleado no encontrado." });
+        }
+
+        const stateEmployee = await StateModel.findOne({
+            where: {
+                Tipo_Estado: "Inactivo"
+            }
+        });
+
+        employee.ID_Estado_FK = stateEmployee.id;
+        await employee.save();
+        res.status(200).send({ msg: "Empleado eliminado con éxito." });
+    } catch (error) {
+        res.status(500).send({ error: "Error interno del servidor." });
+    }
+};
+
 module.exports = {
     createEmployee,
     readProfile,
     updateEmployee,
     readEmployees,
-    readEmployeeId
+    readEmployeeId,
+    deleteEmployeeId
 };
