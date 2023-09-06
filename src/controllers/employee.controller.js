@@ -142,8 +142,32 @@ const updateEmployee = async (req, res) => {
     }
 };
 
+/**
+ * Función para ver todos los empleados
+ * Fecha creación: 02/09/2023
+ * Autor: Hector Armando García González
+ * Referencias:
+ *              Modelo Empleado (employee.js),
+ *              Modelo Estado (state.js)
+ */
+
+const readEmployees = async (req, res) => {
+    try {
+        const employees = await EmployeeModel.findAll({});
+
+        if (employees.length === 0) {
+            return res.status(404).send({ error: "No hay empleados." });
+        }
+
+        res.status(200).send({ employees });
+    } catch (error) {
+        res.status(500).send({ error: "Error interno del servidor." });
+    }
+};
+
 module.exports = {
     createEmployee,
     readProfile,
-    updateEmployee
+    updateEmployee,
+    readEmployees
 };
