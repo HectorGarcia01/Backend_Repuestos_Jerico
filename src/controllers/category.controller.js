@@ -1,5 +1,6 @@
 const Sequelize = require('sequelize');
 const CategoryModel = require('../models/category');
+const StateModel = require('../models/state');
 
 /**
  * Función para Registrar una nueva categoría
@@ -7,13 +8,28 @@ const CategoryModel = require('../models/category');
  * Autor: Hector Armando García González
  * Referencias: 
  *              Modelo Categoría (category.js), 
+ *              Modelo Estado (state.js)
  */
 
-const addCategory = async (req, res) => {
+const createCategory = async (req, res) => {
     try {
         const { nombre_categoria, descripcion_categoria } = req.body;
 
-        const newCategory = await CategoryModel.create({ nombre_categoria, descripcion_categoria });
+        const stateCategory = await StateModel.findOne({
+            where: {
+                Tipo_Estado: 'Activo'
+            }
+        });
+
+        if (!stateCategory) {
+            return res.status(404).send({ error: "Estado no encontrado." });
+        }
+
+        const newCategory = await CategoryModel.create({ 
+            nombre_categoria, 
+            descripcion_categoria,
+            ID_Estado_FK: stateCategory.id
+        });
 
         res.status(201).send({ msg: "Se ha registrado una nueva categoría.", newCategory })
     } catch (error) {
@@ -48,6 +64,6 @@ const readCategories = async (req, res) => {
 };
 
 module.exports = {
-    addCategory,
+    createCategory,
     readCategories
 };
