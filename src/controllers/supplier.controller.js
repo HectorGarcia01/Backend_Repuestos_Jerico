@@ -129,6 +129,38 @@ const updateSupplierId = async (req, res) => {
     }
 };
 
+/**
+ * Función para eliminar lógicamente a un proveedor por id
+ * Fecha creación: 02/09/2023
+ * Autor: Hector Armando García González
+ * Referencias:
+ *              Modelo Proveedor (supplier.js),
+ *              Modelo Estado (state.js)
+ */
+
+const deleteSupplierId = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const supplier = await SupplierModel.findByPk(id);
+
+        if (!supplier) {
+            return res.status(404).send({ error: "Proveedor no encontrado." });
+        }
+
+        const stateSupplier = await StateModel.findOne({
+            where: {
+                Tipo_Estado: "Inactivo"
+            }
+        });
+
+        supplier.ID_Estado_FK = stateSupplier.id;
+        await supplier.save();
+        res.status(200).send({ msg: "Proveedor eliminado con éxito." });
+    } catch (error) {
+        res.status(500).send({ error: "Error interno del servidor." });
+    }
+};
+
 module.exports = {
     createSupplier,
     readSuppliers,
