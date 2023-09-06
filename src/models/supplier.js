@@ -40,7 +40,7 @@ const Proveedor = db.define('Proveedor', {
 
 /**
  * Método personalizado para filtrar información
- * Fecha creación: 22/08/2023
+ * Fecha creación: 02/09/2023
  * Autor: Hector Armando García González
  */
 
