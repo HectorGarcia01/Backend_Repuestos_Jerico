@@ -63,7 +63,31 @@ const readCategories = async (req, res) => {
     }
 };
 
+/**
+ * Función para ver la categoría por id
+ * Fecha creación: 02/09/2023
+ * Autor: Hector Armando García González
+ * Referencias:
+ *              Modelo Categoría (category.js)
+ */
+
+const readCategoryId = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const category = await CategoryModel.findByPk(id);
+
+        if (!category) {
+            return res.status(404).send({ error: "Categoría no encontrada." });
+        }
+
+        res.status(200).send({ category });
+    } catch (error) {
+        res.status(500).send({ error: "Error interno del servidor." });
+    }
+};
+
 module.exports = {
     createCategory,
-    readCategories
+    readCategories,
+    readCategoryId
 };
