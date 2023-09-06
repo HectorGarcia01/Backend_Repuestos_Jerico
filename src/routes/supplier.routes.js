@@ -7,7 +7,10 @@ const {
     updateSupplierId,
     deleteSupplierId
 } = require('../controllers/supplier.controller');
-const supplierSchema = require('../schemas/supplier.schema');
+const {
+    supplierSchema,
+    updateSupplierSchema
+} = require('../schemas/supplier.schema');
 const validateMiddleware = require('../middlewares/validate');
 const authMiddleware = require('../middlewares/auth');
 const roleMiddleware = require('../middlewares/check_role');
@@ -26,7 +29,7 @@ router.patch(
     '/superAdmin/actualizar/proveedor/:id', 
     authMiddleware, 
     roleMiddleware('SuperAdmin'), 
-    validateMiddleware(supplierSchema),
+    validateMiddleware(updateSupplierSchema),
     updateSupplierId
 );
 router.delete('/superAdmin/eliminar/proveedor/:id', authMiddleware, roleMiddleware('SuperAdmin'), deleteSupplierId);
@@ -45,7 +48,7 @@ router.patch(
     '/admin/actualizar/proveedor/:id', 
     authMiddleware, 
     roleMiddleware('Admin'),
-    validateMiddleware(supplierSchema),
+    validateMiddleware(updateSupplierSchema),
     updateSupplierId
 );
 
