@@ -4,6 +4,7 @@ const db = require('./database/db_connection');
 const seedData = require('./controllers/seed_data.controller');
 const customerRoutes = require('./routes/customer.routes');
 const employeeRoutes = require('./routes/employee.routes');
+const addressRoutes = require('./routes/address.routes');
 const authRoutes = require('./routes/auth.routes');
 const imagesRoutes = require('./routes/upload_images.routes');
 const supplierRoutes = require('./routes/supplier.routes');
@@ -36,6 +37,7 @@ app.use(express.json());
 //Configuración de rutas (endpoints)
 app.use(customerRoutes);
 app.use(employeeRoutes);
+app.use(addressRoutes);
 app.use(authRoutes);
 app.use(imagesRoutes);
 app.use(supplierRoutes);
