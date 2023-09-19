@@ -7,7 +7,7 @@ const db = require('../database/db_connection');
  * Autor: Hector Armando García González
  */
 
-const Categoria = db.define('Categoria', {
+const Categoria = db.define('JHSGR_Categoria', {
     nombre_categoria: {
         type: DataTypes.STRING(50),
         allowNull: false,
@@ -21,7 +21,7 @@ const Categoria = db.define('Categoria', {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-            model: 'Estados',
+            model: 'JHSGR_Estados',
             key: 'id'
         }
     }

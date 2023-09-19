@@ -7,7 +7,7 @@ const db = require('../database/db_connection');
  * Autor: Hector Armando García González
  */
 
-const Departamento = db.define('Departamento', {
+const Departamento = db.define('JHSGR_Departamento', {
     nombre_departamento: {
         type: DataTypes.STRING(30),
         allowNull: false,

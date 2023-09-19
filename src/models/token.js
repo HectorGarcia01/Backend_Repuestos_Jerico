@@ -9,7 +9,7 @@ const db = require('../database/db_connection');
  *              Modelo Empleado (employee.js)
  */
 
-const Token = db.define('Token', {
+const Token = db.define('JHSGR_Token', {
     token_usuario: {
         type: DataTypes.STRING,
         allowNull: false
@@ -18,7 +18,7 @@ const Token = db.define('Token', {
         type: DataTypes.INTEGER,
         allowNull: true,
         references: {
-            model: 'Clientes',
+            model: 'JHSGR_Clientes',
             key: 'id'
         }
     },
@@ -26,7 +26,7 @@ const Token = db.define('Token', {
         type: DataTypes.INTEGER,
         allowNull: true,
         references: {
-            model: 'Empleados',
+            model: 'JHSGR_Empleados',
             key: 'id'
         }
     }
