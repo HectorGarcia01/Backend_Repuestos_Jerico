@@ -1,6 +1,7 @@
 const Sequelize = require('sequelize');
 const CustomerModel = require('../models/customer');
-const AddressModel = require('../models/address');
+const DepartmentModel = require('../models/department');
+const MunicipalityModel = require('../models/municipality'); 
 const RoleModel = require('../models/role');
 const StateModel = require('../models/state');
 const TokenModel = require('../models/token');
@@ -11,7 +12,7 @@ const TokenModel = require('../models/token');
  * Autor: Hector Armando García González
  * Referencias: 
  *              Modelo Cliente (customer.js), 
- *              Modelo Direccion (address.js), 
+ *              Modelo Municipio (municipality.js), 
  *              Modelo Rol (role.js), 
  *              Modelo Estado (state.js)
  *              Modelo Token (token.js)
@@ -24,12 +25,25 @@ const createCustomer = async (req, res) => {
             apellido,
             telefono,
             nit,
+            direccion_referencia,
             correo,
             password,
-            departamento,
-            municipio,
-            direccion_referencia
+            ID_Departamento_FK,
+            ID_Municipio_FK
         } = req.body;
+
+        if (ID_Municipio_FK) {
+            const municipalityCustomer = await MunicipalityModel.findOne({
+                where: {
+                    id: ID_Municipio_FK,
+                    ID_Departamento_FK
+                }
+            });
+
+            if (!municipalityCustomer) {
+                return res.status(404).send({ error: "Municipio no encontrado." });
+            }
+        }
 
         const stateCustomer = await StateModel.findOne({
             where: {
@@ -57,19 +71,12 @@ const createCustomer = async (req, res) => {
             telefono,
             nit,
             correo,
+            direccion_referencia,
             password,
             ID_Estado_FK: stateCustomer.id,
-            ID_Rol_FK: roleCustomer.id
+            ID_Rol_FK: roleCustomer.id,
+            ID_Municipio_FK
         });
-
-        if (departamento || municipio || direccion_referencia) {
-            await AddressModel.create({
-                departamento,
-                municipio,
-                direccion_referencia,
-                ID_Cliente_FK: addCustomer.id
-            });
-        }
 
         const token = await addCustomer.generateAuthToken(addCustomer.id, roleCustomer.nombre_rol);
         await TokenModel.create({
@@ -92,16 +99,16 @@ const createCustomer = async (req, res) => {
  * Fecha creación: 22/08/2023
  * Autor: Hector Armando García González
  * Referencias:
- *              Modelo Direccion (address.js)
+ *              Modelo Municipio (municipality.js)
  */
 
 const readProfile = async (req, res) => {
     try {
         const { user } = req;
 
-        const addressCustomer = await AddressModel.findOne({
+        const addressCustomer = await MunicipalityModel.findOne({
             where: {
-                ID_Cliente_FK: user.id
+                id: user.ID_Municipio_FK
             }
         });
 
@@ -122,18 +129,45 @@ const readProfile = async (req, res) => {
 const updateCustomer = async (req, res) => {
     try {
         const { user } = req;
+        const { ID_Departamento_FK, ID_Municipio_FK } = req.body;
         const updates = Object.keys(req.body);
 
-        const allowedUpdates = ['nombre', 'apellido', 'telefono', 'nit', 'departamento', 'municipio', 'direccion_referencia'];
+        const allowedUpdates = [
+            'nombre', 
+            'apellido', 
+            'telefono', 
+            'nit', 
+            'direccion_referencia',
+            'ID_Departamento_FK',
+            'ID_Municipio_FK'
+        ];
+
         const isValidOperation = updates.every((update) => allowedUpdates.includes(update));
 
         if (!isValidOperation) {
             return res.status(400).send({ error: '¡Actualización inválida!' });
         }
 
-        updates.forEach((update) => user[update] = req.body[update]);
+        if (ID_Departamento_FK || ID_Municipio_FK) {
+            const departmentCustomer = await DepartmentModel.findOne({
+                where: {
+                    id: ID_Departamento_FK
+                }
+            });
 
-        //Aún queda pendiente lo de actualizar la dirección ***********************************
+            const municipalityCustomer = await MunicipalityModel.findOne({
+                where: {
+                    id: ID_Municipio_FK,
+                    ID_Departamento_FK
+                }
+            });
+
+            if (!departmentCustomer || !municipalityCustomer) {
+                return res.status(404).send({ error: "Departamento o Municipio no encontrado." });
+            }
+        }
+
+        updates.forEach((update) => user[update] = req.body[update]);
 
         await user.save();
         res.status(200).send({ msg: "Datos actualizados con éxito." });
