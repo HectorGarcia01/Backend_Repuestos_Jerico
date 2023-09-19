@@ -1,5 +1,6 @@
 const { DataTypes } = require('sequelize');
 const db = require('../database/db_connection');
+const Departamento = require('../models/department');
 
 /**
  * Creación del modelo Municipio
@@ -22,6 +23,25 @@ const Municipio = db.define('JHSGR_Municipio', {
             key: 'id'
         }
     },
+});
+
+/**
+ * Configurando la relación de uno a muchos
+ * Fecha creación: 19/09/2023
+ * Autor: Hector Armando García González
+ * Referencia:
+ *              Modelo Departamento (department.js) -> uno
+ *              Modelo Municipio (municipality.js)  -> muchos
+ */
+
+Departamento.hasMany(Municipio, {
+    foreignKey: 'ID_Departamento_FK',
+    as: 'municipios'
+});
+
+Municipio.belongsTo(Departamento, {
+    foreignKey: 'ID_Departamento_FK',
+    as: 'departamento' 
 });
 
 /**
