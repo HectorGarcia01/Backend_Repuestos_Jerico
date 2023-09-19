@@ -30,6 +30,10 @@ const Cliente = db.define('Cliente', {
         type: DataTypes.INTEGER,
         allowNull: true
     },
+    direccion_referencia: {
+        type: DataTypes.STRING(100),
+        allowNull: true
+    },
     correo: {
         type: DataTypes.STRING(30),
         allowNull: false,
@@ -57,6 +61,14 @@ const Cliente = db.define('Cliente', {
         allowNull: false,
         references: {
             model: 'Rols',
+            key: 'id'
+        }
+    },
+    ID_Municipio_FK: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+        references: {
+            model: 'Municipios',
             key: 'id'
         }
     }
