@@ -4,7 +4,7 @@ const DepartmentModel = require('../models/department');
 const MunicipalityModel = require('../models/municipality');
 const typeStates = require('../utils/seed_data/state_seed_data');
 const typeRoles = require('../utils/seed_data/role_seed_data');
-const addresses = require('../utils/seed/address_seed_data');
+const addresses = require('../utils/seed_data/address_seed_data');
 
 /**
  * Insertar datos predefinidos para el modelo Estado y Rol
@@ -39,9 +39,9 @@ const addSeedData = async () => {
 
         if (existingDepartments.length === 0) {
             for (const department of addresses.departamentos) {
-                const newDepartment = await DepartmentModel.create({ Nombre_Departamento: department.nombre });
-                for (const Nombre_Municipio of department.municipios) {
-                    await MunicipalityModel.create({ Nombre_Municipio, ID_Departamento_FK: newDepartment.id });
+                const newDepartment = await DepartmentModel.create({ nombre_departamento: department.nombre });
+                for (const nombre_municipio of department.municipios) {
+                    await MunicipalityModel.create({ nombre_municipio, ID_Departamento_FK: newDepartment.id });
                 }
             }
             console.log("Datos predefinidos de direcciones insertados con éxito.");
