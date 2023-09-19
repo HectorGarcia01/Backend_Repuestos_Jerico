@@ -56,10 +56,18 @@ const userSchema = Joi.object({
         .error((error) => {
             return customError("Las contraseñas no coinciden.", error);
         }),
-    departamento: Joi.string()
-        .trim(),
-    municipio: Joi.string()
-        .trim(),
+    ID_Departamento_FK: Joi.number()
+        .integer()
+        .min(1)
+        .error((error) => {
+            return customError("El ID de departamento debe de ser numérico y no debe de ser negativo.", error);
+        }),
+    ID_Municipio_FK: Joi.number()
+        .integer()
+        .min(1)
+        .error((error) => {
+            return customError("El ID de municipio debe de ser numérico y no debe de ser negativo.", error);
+        }),
     direccion_referencia: Joi.string()
         .trim()
 });

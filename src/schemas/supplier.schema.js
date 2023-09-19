@@ -38,5 +38,41 @@ const supplierSchema = Joi.object({
         })
 });
 
-//Exportación del esquema de validación
-module.exports = supplierSchema;
+/**
+ * Esquema de validación de actualización de datos de Proveedor
+ * Fecha creación: 02/09/2023
+ * Autor: Hector Armando García González
+ * Referencias: 
+ *              custom_error.js (para errores personalizados)
+ */
+
+const updateSupplierSchema = Joi.object({
+    nombre: Joi.string()
+        .trim()
+        .error((error) => {
+            return customError("Nombre inválido.", error);
+        }),
+    apellido: Joi.string()
+        .trim()
+        .error((error) => {
+            return customError("Apellido inválido.", error);
+        }),
+    telefono: Joi.string()
+        .pattern(new RegExp('^[345][0-9]{7}'))
+        .trim()
+        .error((error) => {
+            return customError("Teléfono inválido.", error);
+        }),
+    correo: Joi.string()
+        .email({ tlds: { allow: ['com'] } })
+        .trim()
+        .error((error) => {
+            return customError("El correo electrónico debe de tener la extensión 'com' y debe ser válido.", error);
+        })
+});
+
+//Exportación de los esquemas de validación
+module.exports = {
+    supplierSchema,
+    updateSupplierSchema
+};

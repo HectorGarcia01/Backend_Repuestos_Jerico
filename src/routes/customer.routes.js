@@ -14,5 +14,4 @@ router.post('/nuevo/cliente', validateMiddleware(customerSchema), createCustomer
 router.get('/usuario/ver/perfil', authMiddleware, roleMiddleware('User'), readProfile);
 router.patch('/usuario/actualizar/perfil', authMiddleware, roleMiddleware('User'), updateCustomer);
 
-//Exportación de todas las rutas de cliente
 module.exports = router;

@@ -7,13 +7,12 @@ const db = require('../database/db_connection');
  * Autor: Hector Armando García González
  */
 
-const Estado = db.define('Estado', {
+const Estado = db.define('JHSGR_Estado', {
     nombre_estado: {
         type: DataTypes.STRING(9),
         allowNull: false,
         unique: true,
-        values: ['Pendiente', 'Activo', 'Inactivo'],
-        defaultValue: 'Activo'
+        values: ['Pendiente', 'Activo', 'Inactivo']
     }
 });
 

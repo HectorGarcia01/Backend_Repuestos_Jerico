@@ -5,6 +5,8 @@ const seedData = require('./controllers/seed_data.controller');
 const customerRoutes = require('./routes/customer.routes');
 const employeeRoutes = require('./routes/employee.routes');
 const authRoutes = require('./routes/auth.routes');
+const imagesRoutes = require('./routes/upload_images.routes');
+const supplierRoutes = require('./routes/supplier.routes');
 const inventroryRoutes = require('./routes/inventory.routes');
 
 const app = express();
@@ -35,6 +37,8 @@ app.use(express.json());
 app.use(customerRoutes);
 app.use(employeeRoutes);
 app.use(authRoutes);
+app.use(imagesRoutes);
+app.use(supplierRoutes);
 app.use(inventroryRoutes);
 
 //Configuración del manejo de rutas inexistentes

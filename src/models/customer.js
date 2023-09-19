@@ -13,7 +13,7 @@ const { KEY_TOKEN } = require('../config/config');
  *              Modelo Rol (role.js).
  */
 
-const Cliente = db.define('Cliente', {
+const Cliente = db.define('JHSGR_Cliente', {
     nombre: {
         type: DataTypes.STRING(30),
         allowNull: false
@@ -28,6 +28,10 @@ const Cliente = db.define('Cliente', {
     },
     nit: {
         type: DataTypes.INTEGER,
+        allowNull: true
+    },
+    direccion_referencia: {
+        type: DataTypes.STRING(100),
         allowNull: true
     },
     correo: {
@@ -48,7 +52,7 @@ const Cliente = db.define('Cliente', {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-            model: 'Estados',
+            model: 'JHSGR_Estados',
             key: 'id'
         }
     },
@@ -56,7 +60,15 @@ const Cliente = db.define('Cliente', {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-            model: 'Rols',
+            model: 'JHSGR_Rols',
+            key: 'id'
+        }
+    },
+    ID_Municipio_FK: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+        references: {
+            model: 'JHSGR_Municipios',
             key: 'id'
         }
     }

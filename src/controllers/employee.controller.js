@@ -1,6 +1,5 @@
 const Sequelize = require('sequelize');
 const EmployeeModel = require('../models/employee');
-const AddressModel = require('../models/address');
 const RoleModel = require('../models/role');
 const StateModel = require('../models/state');
 const TokenModel = require('../models/token');
@@ -11,7 +10,6 @@ const TokenModel = require('../models/token');
  * Autor: Hector Armando García González
  * Referencias: 
  *              Modelo Empleado (employee.js), 
- *              Modelo Direccion (address.js), 
  *              Modelo Rol (role.js), 
  *              Modelo Estado (state.js)
  *              Modelo Token (token.js)
@@ -25,10 +23,7 @@ const createEmployee = async (req, res) => {
             telefono,
             nit,
             correo,
-            password,
-            departamento,
-            municipio,
-            direccion_referencia
+            password
         } = req.body;
 
         const stateEmployee = await StateModel.findOne({
@@ -62,15 +57,6 @@ const createEmployee = async (req, res) => {
             ID_Rol_FK: roleEmployee.id
         });
 
-        if (departamento || municipio || direccion_referencia) {
-            await AddressModel.create({
-                departamento,
-                municipio,
-                direccion_referencia,
-                ID_Empleado_FK: addEmployee.id
-            });
-        }
-
         const token = await addEmployee.generateAuthToken(addEmployee.id, roleEmployee.nombre_rol);
         await TokenModel.create({
             token_usuario: token,
@@ -91,21 +77,11 @@ const createEmployee = async (req, res) => {
  * Función para ver el perfil del empleado
  * Fecha creación: 22/08/2023
  * Autor: Hector Armando García González
- * Referencias:
- *              Modelo Direccion (address.js)
  */
 
 const readProfile = async (req, res) => {
     try {
-        const { user } = req;
-
-        const addressEmployee = await AddressModel.findOne({
-            where: {
-                ID_Empleado_FK: user.id
-            }
-        });
-
-        res.status(200).send({ employee: user, addressEmployee });
+        res.status(200).send({ employee: req.user });
     } catch (error) {
         res.status(500).send({ error: "Error interno del servidor." });
     }
@@ -116,7 +92,7 @@ const readProfile = async (req, res) => {
  * Fecha creación: 22/08/2023
  * Autor: Hector Armando García González
  * Referencias: 
- *              Modelo Direccion (address.js)
+ *              Modelo Empleado (employee.js)
  */
 
 const updateEmployee = async (req, res) => {
@@ -124,7 +100,7 @@ const updateEmployee = async (req, res) => {
         const { user } = req;
         const updates = Object.keys(req.body);
 
-        const allowedUpdates = ['nombre', 'apellido', 'telefono', 'nit', 'departamento', 'municipio', 'direccion_referencia'];
+        const allowedUpdates = ['nombre', 'apellido', 'telefono', 'nit'];
         const isValidOperation = updates.every((update) => allowedUpdates.includes(update));
 
         if (!isValidOperation) {
@@ -133,10 +109,86 @@ const updateEmployee = async (req, res) => {
 
         updates.forEach((update) => user[update] = req.body[update]);
 
-        //Aún queda pendiente lo de actualizar la dirección ***********************************
-
         await user.save();
         res.status(200).send({ msg: "Datos actualizados con éxito." });
+    } catch (error) {
+        res.status(500).send({ error: "Error interno del servidor." });
+    }
+};
+
+/**
+ * Función para ver todos los empleados
+ * Fecha creación: 02/09/2023
+ * Autor: Hector Armando García González
+ * Referencias:
+ *              Modelo Empleado (employee.js),
+ *              Modelo Estado (state.js)
+ */
+
+const readEmployees = async (req, res) => {
+    try {
+        const employees = await EmployeeModel.findAll({});
+
+        if (employees.length === 0) {
+            return res.status(404).send({ error: "No hay empleados." });
+        }
+
+        res.status(200).send({ employees });
+    } catch (error) {
+        res.status(500).send({ error: "Error interno del servidor." });
+    }
+};
+
+/**
+ * Función para ver un empleado por ID
+ * Fecha creación: 16/08/2023
+ * Autor: Hector Armando García González
+ * Referencias:
+ *              Modelo Empleado (employee.js),
+ */
+
+const readEmployeeId = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const employee = await EmployeeModel.findByPk(id);
+
+        if (!employee) {
+            return res.status(404).send({ error: "Empleado no encontrado." });
+        }
+
+        res.status(200).send({ employee });
+    } catch (error) {
+        res.status(500).send({ error: "Error interno del servidor." });
+    }
+};
+
+/**
+ * Función para eliminar lógicamente a un empleado por id
+ * Fecha creación: 02/09/2023
+ * Autor: Hector Armando García González
+ * Referencias:
+ *              Modelo Empleado (employee.js),
+ *              Modelo Estado (state.js)
+ */
+
+const deleteEmployeeId = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const employee = await EmployeeModel.findByPk(id);
+
+        if (!employee) {
+            return res.status(404).send({ error: "Empleado no encontrado." });
+        }
+
+        const stateEmployee = await StateModel.findOne({
+            where: {
+                Tipo_Estado: "Inactivo"
+            }
+        });
+
+        employee.ID_Estado_FK = stateEmployee.id;
+        await employee.save();
+        res.status(200).send({ msg: "Empleado eliminado con éxito." });
     } catch (error) {
         res.status(500).send({ error: "Error interno del servidor." });
     }
@@ -145,5 +197,8 @@ const updateEmployee = async (req, res) => {
 module.exports = {
     createEmployee,
     readProfile,
-    updateEmployee
+    updateEmployee,
+    readEmployees,
+    readEmployeeId,
+    deleteEmployeeId
 };

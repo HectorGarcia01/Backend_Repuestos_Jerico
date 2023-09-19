@@ -82,7 +82,45 @@ const logout = async (req, res) => {
     }
 };
 
+/**
+ * Función para cerrar todas las sesiones
+ * Fecha creación: 02/09/2023
+ * Autor: Hector Armando García González
+ * Referencias: 
+ *              Modelo Token (token.js)
+ */
+
+const logoutAll = async (req, res) => {
+    try {
+        const { user, role } = req;
+        let removedToken;
+
+        if (role === 'User') {
+            removedToken = await TokenModel.destroy({
+                where: {
+                    ID_Cliente_FK: user.id
+                }
+            });
+        } else {
+            removedToken = await TokenModel.destroy({
+                where: {
+                    ID_Empleado_FK: user.id
+                }
+            });
+        }
+
+        if (removedToken === 0) {
+            return res.status(404).send({ error: "Error al cerrar todas las sesiones." });
+        }
+
+        res.status(200).send({ msg: "Sesiones cerradas correctamente." });
+    } catch (error) {
+        res.status(500).send({ error: "Error interno del servidor." });
+    }
+};
+
 module.exports = {
     login,
-    logout
+    logout,
+    logoutAll
 };
