@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 const db = require('../database/db_connection');
 const { KEY_TOKEN } = require('../config/config');
 const Municipio = require('../models/municipality'); 
+const Departamento = require('../models/department'); 
 
 /**
  * Creación del modelo Cliente
@@ -127,7 +128,15 @@ Cliente.prototype.findByCredentials = async (correo, password) => {
     const customer = await Cliente.findOne({
         where: {
             correo
-        }
+        },
+        include: [{
+            model: Municipio,
+            as: 'municipio',
+            include: [{
+                model: Departamento,
+                as: 'departamento'
+            }]
+        }]
     });
 
     if (!customer) {
