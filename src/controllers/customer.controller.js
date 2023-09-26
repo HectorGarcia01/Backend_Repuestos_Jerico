@@ -98,21 +98,13 @@ const createCustomer = async (req, res) => {
  * Función para ver el perfil del cliente
  * Fecha creación: 22/08/2023
  * Autor: Hector Armando García González
- * Referencias:
- *              Modelo Municipio (municipality.js)
  */
 
 const readProfile = async (req, res) => {
     try {
         const { user } = req;
 
-        const addressCustomer = await MunicipalityModel.findOne({
-            where: {
-                id: user.ID_Municipio_FK
-            }
-        });
-
-        res.status(200).send({ customer: user, addressCustomer });
+        res.status(200).send({ customer: user });
     } catch (error) {
         res.status(500).send({ error: "Error interno del servidor." });
     }

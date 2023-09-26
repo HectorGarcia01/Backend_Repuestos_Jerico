@@ -3,6 +3,8 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const db = require('../database/db_connection');
 const { KEY_TOKEN } = require('../config/config');
+const Municipio = require('../models/municipality'); 
+const Departamento = require('../models/department'); 
 
 /**
  * Creación del modelo Cliente
@@ -75,6 +77,25 @@ const Cliente = db.define('JHSGR_Cliente', {
 });
 
 /**
+ * Configurando la relación de muchos a uno
+ * Fecha creación: 19/09/2023
+ * Autor: Hector Armando García González
+ * Referencia:
+ *              Modelo Cliente (department.js) -> muchos
+ *              Modelo Municipio (municipality.js)  -> uno
+ */
+
+Cliente.belongsTo(Municipio, {
+    foreignKey: 'ID_Municipio_FK',
+    as: 'municipio' 
+});
+
+Municipio.hasMany(Cliente, {
+    foreignKey: 'ID_Municipio_FK',
+    as: 'clientes'
+});
+
+/**
  * Hook para el cifrado de contraseña
  * Fecha creación: 22/08/2023
  * Autor: Hector Armando García González
@@ -107,7 +128,15 @@ Cliente.prototype.findByCredentials = async (correo, password) => {
     const customer = await Cliente.findOne({
         where: {
             correo
-        }
+        },
+        include: [{
+            model: Municipio,
+            as: 'municipio',
+            include: [{
+                model: Departamento,
+                as: 'departamento'
+            }]
+        }]
     });
 
     if (!customer) {
@@ -134,9 +163,10 @@ Cliente.prototype.toJSON = function () {
 
     delete customer.foto_perfil;
     delete customer.password;
+    delete customer.ID_Rol_FK;
+    delete customer.ID_Municipio_FK;
     delete customer.createdAt;
     delete customer.updatedAt;
-    delete customer.ID_Rol_FK;
 
     return customer;
 };
