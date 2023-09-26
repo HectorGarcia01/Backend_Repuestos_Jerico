@@ -13,8 +13,11 @@ const RoleModel = require('../models/role');
  * Autor: Hector Armando García González
  * Referencias: 
  *              Modelo Cliente (customer.js),
+ *              Modelo Departamento (department.js),
+ *              Modelo Municipio (municipality.js),
  *              Modelo Empleado (employee.js),
- *              Modelo Token (token.js)
+ *              Modelo Token (token.js),
+ *              Modelo Rol (role.js)
  */
 
 const authentication = async (req, res, next) => {
