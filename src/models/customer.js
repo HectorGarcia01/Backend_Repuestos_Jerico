@@ -11,6 +11,7 @@ const Departamento = require('../models/department');
  * Fecha creación: 22/08/2023
  * Autor: Hector Armando García González
  * Referencias: 
+ *              Modelo Municipio (municipality.js).
  *              Modelo Estado (state.js).
  *              Modelo Rol (role.js).
  */
@@ -122,6 +123,9 @@ Cliente.prototype.generateAuthToken = (id, role) => {
  * Método personalizado para validar credenciales
  * Fecha creación: 22/08/2023
  * Autor: Hector Armando García González
+ * Referencias:
+ *              Modelo Municipio (municipality.js),
+ *              Modelo Departamento (department.js)
  */
 
 Cliente.prototype.findByCredentials = async (correo, password) => {

@@ -1,7 +1,6 @@
 const Sequelize = require('sequelize');
 const DepartmentModel = require('../models/department');
 const MunicipalityModel = require('../models/municipality');
-const Municipio = require('../models/municipality');
 
 /**
  * Función para registrar una nueva dirección (departamento y municipio)
@@ -21,7 +20,7 @@ const createAddress = (req, res) => {
 };
 
 /**
- * Función para registrar una nueva dirección (departamento y municipio)
+ * Función para ver todas las direcciones
  * Fecha creación: 19/09/2023
  * Autor: Hector Armando García González
  * Referencias: 
@@ -33,7 +32,7 @@ const readAddresses = async (req, res) => {
     try {
         const address = await DepartmentModel.findAll({
             include: [{
-                model: Municipio,
+                model: MunicipalityModel,
                 as: 'municipios'
             }]
         });
@@ -44,7 +43,7 @@ const readAddresses = async (req, res) => {
 
         res.status(200).send({ address });
     } catch (error) {
-        res.status(500).send({ error: "Error interno del servidor.", hola: error.message });
+        res.status(500).send({ error: "Error interno del servidor." });
     }
 };
 

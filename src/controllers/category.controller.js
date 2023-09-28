@@ -17,7 +17,7 @@ const createCategory = async (req, res) => {
 
         const stateCategory = await StateModel.findOne({
             where: {
-                Tipo_Estado: 'Activo'
+                nombre_estado: 'Activo'
             }
         });
 
@@ -36,7 +36,7 @@ const createCategory = async (req, res) => {
         if (error instanceof Sequelize.UniqueConstraintError) {
             res.status(400).send({ error: "¡La categoría ya existe!" });
         } else {
-            res.status(500).send({ errors: "Error interno del servidor." });
+            res.status(500).send({ error: error.message });
         }
     }
 };
@@ -141,7 +141,7 @@ const deleteCategoryId = async (req, res) => {
 
         const stateCategory = await StateModel.findOne({
             where: {
-                Tipo_Estado: "Inactivo"
+                nombre_estado: "Inactivo"
             }
         });
 
