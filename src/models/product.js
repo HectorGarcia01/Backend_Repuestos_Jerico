@@ -18,6 +18,10 @@ const Producto = db.define('JHSGR_Producto', {
         type: DataTypes.STRING(50),
         allowNull: false
     },
+    codigo_producto: {
+        type: DataTypes.STRING(50),
+        allowNull: true
+    },
     precio_compra: {
         type: DataTypes.DOUBLE,
         allowNull: false
@@ -26,8 +30,20 @@ const Producto = db.define('JHSGR_Producto', {
         type: DataTypes.DOUBLE,
         allowNull: false
     },
+    ganancia_venta: {
+        type: DataTypes.DOUBLE,
+        allowNull: false
+    },
     descripcion_producto: {
         type: DataTypes.STRING(200),
+        allowNull: true
+    },
+    medida_producto: {
+        type: DataTypes.STRING(50),
+        allowNull: true
+    },
+    color_producto: {
+        type: DataTypes.STRING(50),
         allowNull: true
     },
     cantidad_stock: {
@@ -60,7 +76,7 @@ const Producto = db.define('JHSGR_Producto', {
     },
     ID_Marca_FK: {
         type: DataTypes.INTEGER,
-        allowNull: false,
+        allowNull: true,
         references: {
             model: 'JHSGR_Marca_Productos',
             key: 'id'
