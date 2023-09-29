@@ -2,7 +2,7 @@ const Joi = require('joi');
 const customError = require('../utils/custom_error');
 
 /**
- * Esquema de validación de datos de Inventario (Productos)
+ * Esquema de validación de datos de Productos
  * Fecha creación: 22/08/2023
  * Autor: Hector Armando García González
  * Referencias: 
