@@ -3,8 +3,9 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const db = require('../database/db_connection');
 const { KEY_TOKEN } = require('../config/config');
-const Municipio = require('../models/municipality'); 
-const Departamento = require('../models/department'); 
+const Municipio = require('../models/municipality');
+const Departamento = require('../models/department');
+const Estado = require('../models/state');
 
 /**
  * Creación del modelo Cliente
@@ -78,6 +79,24 @@ const Cliente = db.define('JHSGR_Cliente', {
 });
 
 /**
+ * Configurando la relación de uno a uno
+ * Fecha creación: 29/09/2023
+ * Autor: Hector Armando García González
+ * Referencia:
+ *              Modelo Cliente (customer.js) -> uno
+ *              Modelo Estado (state.js)  -> uno
+ */
+
+Estado.hasOne(Cliente, {
+    foreignKey: 'ID_Estado_FK'
+});
+
+Cliente.belongsTo(Estado, {
+    foreignKey: 'ID_Estado_FK',
+    as: 'estado'
+});
+
+/**
  * Configurando la relación de muchos a uno
  * Fecha creación: 19/09/2023
  * Autor: Hector Armando García González
@@ -88,7 +107,7 @@ const Cliente = db.define('JHSGR_Cliente', {
 
 Cliente.belongsTo(Municipio, {
     foreignKey: 'ID_Municipio_FK',
-    as: 'municipio' 
+    as: 'municipio'
 });
 
 Municipio.hasMany(Cliente, {
@@ -125,7 +144,8 @@ Cliente.prototype.generateAuthToken = (id, role) => {
  * Autor: Hector Armando García González
  * Referencias:
  *              Modelo Municipio (municipality.js),
- *              Modelo Departamento (department.js)
+ *              Modelo Departamento (department.js),
+ *              Modelo Estado (state.js)
  */
 
 Cliente.prototype.findByCredentials = async (correo, password) => {
@@ -140,6 +160,10 @@ Cliente.prototype.findByCredentials = async (correo, password) => {
                 model: Departamento,
                 as: 'departamento'
             }]
+        }, {
+            model: Estado,
+            as: 'estado',
+            attributes: ['Tipo_Estado']
         }]
     });
 
@@ -167,6 +191,7 @@ Cliente.prototype.toJSON = function () {
 
     delete customer.foto_perfil;
     delete customer.password;
+    delete customer.ID_Estado_FK;
     delete customer.ID_Rol_FK;
     delete customer.ID_Municipio_FK;
     delete customer.createdAt;
