@@ -8,6 +8,9 @@ const addressRoutes = require('./routes/address.routes');
 const authRoutes = require('./routes/auth.routes');
 const imagesRoutes = require('./routes/upload_images.routes');
 const supplierRoutes = require('./routes/supplier.routes');
+const categoryRoutes = require('./routes/category.routes');
+const brandProductRoutes = require('./routes/brand_product.routes');
+const productRoutes = require('./routes/product.routes');
 const inventroryRoutes = require('./routes/inventory.routes');
 
 const app = express();
@@ -41,6 +44,9 @@ app.use(addressRoutes);
 app.use(authRoutes);
 app.use(imagesRoutes);
 app.use(supplierRoutes);
+app.use(categoryRoutes);
+app.use(brandProductRoutes);
+app.use(productRoutes);
 app.use(inventroryRoutes);
 
 //Configuración del manejo de rutas inexistentes
