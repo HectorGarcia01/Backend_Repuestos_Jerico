@@ -163,7 +163,7 @@ Cliente.prototype.findByCredentials = async (correo, password) => {
         }, {
             model: Estado,
             as: 'estado',
-            attributes: ['Tipo_Estado']
+            attributes: ['nombre_estado']
         }]
     });
 
