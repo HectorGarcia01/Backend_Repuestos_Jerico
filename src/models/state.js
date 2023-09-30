@@ -9,10 +9,17 @@ const db = require('../database/db_connection');
 
 const Estado = db.define('JHSGR_Estado', {
     nombre_estado: {
-        type: DataTypes.STRING(9),
+        type: DataTypes.STRING(10),
         allowNull: false,
         unique: true,
-        values: ['Pendiente', 'Activo', 'Inactivo']
+        values: [
+            'Pendiente', 
+            'Activo', 
+            'Inactivo',
+            'Carrito',
+            'En proceso',
+            'Completado'
+        ]
     }
 });
 

@@ -3,20 +3,16 @@ const db = require('../database/db_connection');
 const Estado = require('../models/state');
 
 /**
- * Creación del modelo Categoria
- * Fecha creación: 22/08/2023
+ * Creación del modelo Marca del Producto
+ * Fecha creación: 29/09/2023
  * Autor: Hector Armando García González
  */
 
-const Categoria = db.define('JHSGR_Categoria', {
-    nombre_categoria: {
+const Marca_Producto = db.define('JHSGR_Marca_Producto', {
+    nombre_marca: {
         type: DataTypes.STRING(50),
         allowNull: false,
         unique: true
-    },
-    descripcion_categoria: {
-        type: DataTypes.STRING(200),
-        allowNull: true
     },
     ID_Estado_FK: {
         type: DataTypes.INTEGER,
@@ -33,33 +29,33 @@ const Categoria = db.define('JHSGR_Categoria', {
  * Fecha creación: 29/09/2023
  * Autor: Hector Armando García González
  * Referencia:
- *              Modelo Categoría (category.js) -> uno
+ *              Modelo Marca_Producto (brand_product.js) -> uno
  *              Modelo Estado (state.js)  -> uno
  */
 
-Estado.hasOne(Categoria, {
+Estado.hasOne(Marca_Producto, {
     foreignKey: 'ID_Estado_FK'
 });
 
-Categoria.belongsTo(Estado, {
+Marca_Producto.belongsTo(Estado, {
     foreignKey: 'ID_Estado_FK',
     as: 'estado'
 });
 
 /**
  * Método personalizado para filtrar información
- * Fecha creación: 02/09/2023
+ * Fecha creación: 29/09/2023
  * Autor: Hector Armando García González
  */
 
-Categoria.prototype.toJSON = function () {
-    const category = { ...this.get() };
+Marca_Producto.prototype.toJSON = function () {
+    const brand_product = { ...this.get() };
 
-    delete category.ID_Estado_FK;
-    delete category.createdAt;
-    delete category.updatedAt;
+    delete brand_product.ID_Estado_FK;
+    delete brand_product.createdAt;
+    delete brand_product.updatedAt;
 
-    return category;
+    return brand_product;
 };
 
-module.exports = Categoria;
+module.exports = Marca_Producto;
