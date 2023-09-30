@@ -52,7 +52,7 @@ const productSchema = Joi.object({
         .error((error) => {
             return customError("La categoría es obligatoria, debe de ser numérico y no debe de ser negativo.", error);
         }),
-    ID_Marka_FK: Joi.number()
+    ID_Marca_FK: Joi.number()
         .integer()
         .min(1)
         .error((error) => {
