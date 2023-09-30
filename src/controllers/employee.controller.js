@@ -182,7 +182,7 @@ const deleteEmployeeId = async (req, res) => {
 
         const stateEmployee = await StateModel.findOne({
             where: {
-                Tipo_Estado: "Inactivo"
+                nombre_estado: "Inactivo"
             }
         });
 

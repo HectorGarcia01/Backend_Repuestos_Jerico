@@ -22,7 +22,7 @@ const createSupplier = async (req, res) => {
 
         const stateSupplier = await StateModel.findOne({
             where: {
-                Tipo_Estado: 'Activo'
+                nombre_estado: 'Activo'
             }
         });
 
@@ -149,7 +149,7 @@ const deleteSupplierId = async (req, res) => {
 
         const stateSupplier = await StateModel.findOne({
             where: {
-                Tipo_Estado: "Inactivo"
+                nombre_estado: "Inactivo"
             }
         });
 
