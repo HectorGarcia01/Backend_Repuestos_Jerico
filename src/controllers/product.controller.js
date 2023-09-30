@@ -46,7 +46,7 @@ const createProduct = async (req, res) => {
 
         const stateProduct = await StateModel.findOne({
             where: {
-                Tipo_Estado: 'Activo'
+                nombre_estado: 'Activo'
             }
         });
 
@@ -76,7 +76,7 @@ const createProduct = async (req, res) => {
         } else if (error.status === 404) {
             res.status(error.status).send({ error: error.message });
         } else {
-            res.status(500).send({ error: "Error interno del servidor." });
+            res.status(500).send({ error });
         }
     }
 };
@@ -209,7 +209,7 @@ const deleteProductId = async (req, res) => {
 
         const stateProduct = await StateModel.findOne({
             where: {
-                Tipo_Estado: "Inactivo"
+                nombre_estado: "Inactivo"
             }
         });
 
