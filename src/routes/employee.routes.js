@@ -8,7 +8,7 @@ const {
     readEmployeeId,
     deleteEmployeeId
 } = require('../controllers/employee.controller');
-const employeeSchema = require('../schemas/user.schema');
+const { userSchema, updateUserSchema } = require('../schemas/user.schema');
 const validateMiddleware = require('../middlewares/validate');
 const authMiddleware = require('../middlewares/auth');
 const roleMiddleware = require('../middlewares/check_role');
@@ -18,7 +18,7 @@ router.post(
     '/superAdmin/nuevo/empleado',
     authMiddleware,
     roleMiddleware('SuperAdmin'),
-    validateMiddleware(employeeSchema),
+    validateMiddleware(userSchema),
     createEmployee
 );
 router.get('/superAdmin/ver/perfil', authMiddleware, roleMiddleware('SuperAdmin'), readProfile);
@@ -29,6 +29,6 @@ router.delete('/superAdmin/eliminar/empleado/:id', authMiddleware, roleMiddlewar
 
 //Configuración de rutas (endpoints) para el Admin
 router.get('/admin/ver/perfil', authMiddleware, roleMiddleware('Admin'), readProfile);
-router.patch('/admin/actualizar/perfil', authMiddleware, roleMiddleware('Admin'), updateEmployee);
+router.patch('/admin/actualizar/perfil', authMiddleware, roleMiddleware('Admin'), validateMiddleware(updateUserSchema), updateEmployee);
 
 module.exports = router;

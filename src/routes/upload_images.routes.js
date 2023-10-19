@@ -14,11 +14,8 @@ router.post(
     '/superAdmin/subir/fotoPerfil',
     authMiddleware,
     roleMiddleware('SuperAdmin'),
-    uploadMiddleware.single('foto_perfil'),
-    addUserAvatar,
-    (error, req, res, next) => {
-        res.status(400).send({ error: error.message });
-    }
+    uploadMiddleware,
+    addUserAvatar
 );
 router.get('/superAdmin/ver/fotoPerfil', authMiddleware, roleMiddleware('SuperAdmin'), getUserAvatar);
 router.delete('/superAdmin/eliminar/fotoPerfil', authMiddleware, roleMiddleware('SuperAdmin'), deleteUserAvatar);
@@ -28,11 +25,8 @@ router.post(
     '/admin/subir/fotoPerfil',
     authMiddleware,
     roleMiddleware('Admin'),
-    uploadMiddleware.single('foto_perfil'),
-    addUserAvatar,
-    (error, req, res, next) => {
-        res.status(400).send({ error: error.message });
-    }
+    uploadMiddleware,
+    addUserAvatar
 );
 router.get('/admin/ver/fotoPerfil', authMiddleware, roleMiddleware('Admin'), getUserAvatar);
 router.delete('/admin/eliminar/fotoPerfil', authMiddleware, roleMiddleware('Admin'), deleteUserAvatar);
@@ -42,11 +36,8 @@ router.post(
     '/usuario/subir/fotoPerfil',
     authMiddleware,
     roleMiddleware('User'),
-    uploadMiddleware.single('foto_perfil'),
-    addUserAvatar,
-    (error, req, res, next) => {
-        res.status(400).send({ error: error.message });
-    }
+    uploadMiddleware,
+    addUserAvatar
 );
 router.get('/usuario/ver/fotoPerfil', authMiddleware, roleMiddleware('User'), getUserAvatar);
 router.delete('/usuario/eliminar/fotoPerfil', authMiddleware, roleMiddleware('User'), deleteUserAvatar);

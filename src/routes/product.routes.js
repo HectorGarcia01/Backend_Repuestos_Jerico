@@ -26,7 +26,6 @@ router.post('/admin/crear/producto', authMiddleware, roleMiddleware('Admin'), va
 router.get('/admin/ver/productos', authMiddleware, roleMiddleware('Admin'), readProducts);
 router.get('/admin/ver/producto/:id', authMiddleware, roleMiddleware('Admin'), readProductId);
 router.patch('/admin/actualizar/producto/:id', authMiddleware, roleMiddleware('Admin'), updateProductId);
-router.delete('/admin/eliminar/producto/:id', authMiddleware, roleMiddleware('Admin'), deleteProductId);
 
 //Rutas (endpoints) para el home
 router.get('/usuario/ver/productos', readProducts);
