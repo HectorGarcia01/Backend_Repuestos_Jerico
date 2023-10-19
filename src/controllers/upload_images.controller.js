@@ -13,7 +13,10 @@ const addUserAvatar = async (req, res) => {
         }
 
         const { user, role } = req;
-        const buffer = await sharp(req.file.buffer).resize({ width: 250, height: 250 }).png().toBuffer();
+        const buffer = await sharp(req.file.buffer).resize({ 
+            width: 250, 
+            height: 250 
+        }).png({ compressionLevel: 9 }).toBuffer();
 
         if (role === 'User') {
             user.foto_perfil = buffer;
@@ -24,7 +27,7 @@ const addUserAvatar = async (req, res) => {
         await user.save();
         res.status(200).send({ msg: "Foto de perfil guardada con éxito." });
     } catch (error) {
-        res.status(500).send({ error });
+        res.status(500).send({ error: "Error interno del servidor. " });
     }
 };
 
