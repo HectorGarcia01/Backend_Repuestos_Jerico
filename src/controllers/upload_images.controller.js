@@ -8,6 +8,10 @@ const sharp = require('sharp');
 
 const addUserAvatar = async (req, res) => {
     try {
+        if (!req.file) {
+            return res.status(400).send({ error: "No se proporcionó una imágen para subir." });
+        }
+
         const { user, role } = req;
         const buffer = await sharp(req.file.buffer).resize({ width: 250, height: 250 }).png().toBuffer();
 
@@ -20,7 +24,7 @@ const addUserAvatar = async (req, res) => {
         await user.save();
         res.status(200).send({ msg: "Foto de perfil guardada con éxito." });
     } catch (error) {
-        res.status(500).send({ error: "Error interno del servidor." });
+        res.status(500).send({ error });
     }
 };
 
