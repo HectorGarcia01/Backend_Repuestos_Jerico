@@ -22,6 +22,10 @@ const Inventario = db.define('JHSGR_Inventario', {
         type: DataTypes.INTEGER,
         allowNull: false
     },
+    monto_movimiento: {
+        type: DataTypes.DOUBLE,
+        allowNull: false
+    },
     ID_Empleado_FK: {
         type: DataTypes.INTEGER,
         allowNull: false,
