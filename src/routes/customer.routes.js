@@ -11,7 +11,7 @@ const authMiddleware = require('../middlewares/auth');
 const roleMiddleware = require('../middlewares/check_role');
 
 router.post('/nuevo/cliente', validateMiddleware(userSchema), createCustomer);
-router.get('/usuario/ver/perfil', authMiddleware, roleMiddleware('User'), validateMiddleware(updateUserSchema), readProfile);
-router.patch('/usuario/actualizar/perfil', authMiddleware, roleMiddleware('User'), updateCustomer);
+router.get('/usuario/ver/perfil', authMiddleware, roleMiddleware('User'), readProfile);
+router.patch('/usuario/actualizar/perfil', authMiddleware, roleMiddleware('User'), validateMiddleware(updateUserSchema), updateCustomer);
 
 module.exports = router;
