@@ -10,7 +10,8 @@ const db = require('../database/db_connection');
 const Metodo_Pago = db.define(`JHSGR_Metodo_Pago`, {
     tipo_pago: {
         type: DataTypes.STRING(40),
-        allowNull: false
+        allowNull: false,
+        unique: true
     }
 });
 
