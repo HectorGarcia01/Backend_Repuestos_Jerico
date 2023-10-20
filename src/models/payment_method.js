@@ -10,7 +10,8 @@ const db = require('../database/db_connection');
 const Tipo_Envio = db.define(`JHSGR_Tipo_Envio`, {
     nombre_envio: {
         type: DataTypes.STRING(40),
-        allowNull: false
+        allowNull: false,
+        unique: true
     }
 });
 
