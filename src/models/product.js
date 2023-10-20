@@ -3,6 +3,7 @@ const db = require('../database/db_connection');
 const Estado = require('../models/state');
 const Categoria = require('../models/category');
 const Marca = require('../models/brand_product');
+const Ubicacion_Producto = require('../models/product_location');
 
 /**
  * Creación del modelo Producto
@@ -81,6 +82,14 @@ const Producto = db.define('JHSGR_Producto', {
             model: 'JHSGR_Marca_Productos',
             key: 'id'
         }
+    },
+    ID_Ubicacion_FK: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+        references: {
+            model: 'JHSGR_Ubicacion_Productos',
+            key: 'id'
+        }
     }
 });
 
@@ -138,6 +147,25 @@ Marca.hasMany(Producto, {
 Producto.belongsTo(Marca, {
     foreignKey: 'ID_Marca_FK',
     as: 'marca'
+});
+
+/**
+ * Configurando la relación de uno a muchos
+ * Fecha creación: 29/09/2023
+ * Autor: Hector Armando García González
+ * Referencia:
+ *              Modelo Ubicacion_Producto (product_location.js) -> uno
+ *              Modelo Producto (product.js)  -> muchos
+ */
+
+Ubicacion_Producto.hasMany(Producto, {
+    foreignKey: 'ID_Ubicacion_FK',
+    as: 'productos'
+});
+
+Producto.belongsTo(Ubicacion_Producto, {
+    foreignKey: 'ID_Ubicacion_FK',
+    as: 'ubicacion_categoria'
 });
 
 /**
