@@ -29,7 +29,7 @@ const Factura_Venta = db.define(`JHSGR_Factura_Venta`, {
     },
     ID_Empleado_FK: {
         type: DataTypes.INTEGER,
-        allowNull: false,
+        allowNull: true,
         references: {
             model: `JHSGR_Empleados`,
             key: 'id'
@@ -39,13 +39,13 @@ const Factura_Venta = db.define(`JHSGR_Factura_Venta`, {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-            model: `JHSGR_Proveedors`,
+            model: `JHSGR_Clientes`,
             key: 'id'
         }
     },
     ID_Metodo_Pago_FK: {
         type: DataTypes.INTEGER,
-        allowNull: false,
+        allowNull: true,
         references: {
             model: `JHSGR_Metodo_Pagos`,
             key: 'id'
@@ -53,7 +53,7 @@ const Factura_Venta = db.define(`JHSGR_Factura_Venta`, {
     },
     ID_Tipo_Envio_FK: {
         type: DataTypes.INTEGER,
-        allowNull: false,
+        allowNull: true,
         references: {
             model: `JHSGR_Tipo_Envios`,
             key: 'id'
