@@ -89,6 +89,48 @@ const createShoppingCart = async (req, res) => {
     }
 };
 
+const readShoppingCartId = async (req, res) => {
+    try {
+        const { user } = req;
+        const stateShoppingCart = await StateModel.findOne({
+            where: {
+                nombre_estado: 'Carrito'
+            }
+        });
+
+        if (!stateShoppingCart) {
+            return res.status(404).send({ error: "Estado no encontrado." });
+        }
+
+        const shoppingDetailCart = await SalesInvoiceModel.findOne({
+            where: {
+                ID_Cliente_FK: user.id,
+                ID_Estado_FK: stateShoppingCart.id
+            },
+            attributes: ['id', 'total_factura'],
+            include: [{
+                model: SalesDetailModel,
+                as: 'detalles_venta',
+                attributes: ['id', 'cantidad_producto', 'precio_unitario', 'subtotal_venta'],
+                include: {
+                    model: ProductModel,
+                    as: 'producto',
+                    attributes: ['id', 'nombre_producto', 'descripcion_producto']
+                }
+            }]
+        });
+        
+        if (!shoppingDetailCart) {
+            return res.status(404).send({ error: "Detalle del carrito de compras no encontrado." });
+        }
+
+        res.status(200).send({ shoppingDetailCart });
+    } catch (error) {
+        res.status(500).send({ error: "Error interno del servidor." });
+    }
+}
+
 module.exports = { 
-    createShoppingCart
+    createShoppingCart,
+    readShoppingCartId
 }
