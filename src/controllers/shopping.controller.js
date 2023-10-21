@@ -273,7 +273,60 @@ const deleteShoppingCart = async (req, res) => {
         
         res.status(200).send({ msg: "El carrito ha sido eliminado con éxito." });
     } catch (error) {
-        res.status(500).send({ error: error.message });
+        res.status(500).send({ error: "Error interno del servidor." });
+    }
+};
+
+/**
+ * Función para procesar compra del cliente
+ * Fecha creación: 29/09/2023
+ * Autor: Hector Armando García González
+ * Referencias: 
+ *              Modelo Factura_Venta (sales_invoice.js), 
+ *              Modelo Estado (state.js)
+ */
+
+const processCustomerSale = async (req, res) => {
+    try {
+        const { user } = req;
+
+        const stateShoppingCart = await StateModel.findOne({
+            where: {
+                nombre_estado: 'Carrito'
+            }
+        });
+
+        if (!stateShoppingCart) {
+            return res.status(404).send({ error: "Estado no encontrado." });
+        }
+
+        const salesInvoice = await SalesInvoiceModel.findOne({
+            where: {
+                ID_Cliente_FK: user.id,
+                ID_Estado_FK: stateShoppingCart.id
+            }
+        });
+
+        if (!salesInvoice) {
+            return res.status(404).send({ error: "Carrito de compras no encontrado." });
+        }
+
+        const stateSalesInvoice = await StateModel.findOne({
+            where: {
+                nombre_estado: 'Pendiente'
+            }
+        });
+
+        if (!stateSalesInvoice) {
+            return res.status(404).send({ error: "Estado no encontrado." });
+        }
+
+        salesInvoice.ID_Estado_FK = stateSalesInvoice.id;
+        await salesInvoice.save();
+
+        res.status(200).send({ msg: "Compra procesada con éxito." });
+    } catch (error) {
+        res.status(500).send({ error: "Error interno del servidor." });
     }
 };
 
@@ -281,5 +334,6 @@ module.exports = {
     createShoppingCart,
     readShoppingCart,
     deleteProductIdShoppingCart,
-    deleteShoppingCart
+    deleteShoppingCart,
+    processCustomerSale
 }
