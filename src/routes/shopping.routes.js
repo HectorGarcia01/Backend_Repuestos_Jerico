@@ -4,7 +4,8 @@ const {
     createShoppingCart,
     readShoppingCart,
     deleteProductIdShoppingCart,
-    deleteShoppingCart
+    deleteShoppingCart,
+    processCustomerSale
 } = require('../controllers/shopping.controller');
 // const { shoppingSchema, updateShoppingSchema } = require('../schemas/shopping.schema');
 const validateMiddleware = require('../middlewares/validate');
@@ -21,5 +22,6 @@ router.post(
 router.get('/usuario/carrito/ver', authMiddleware, roleMiddleware('User'), readShoppingCart);
 router.delete('/usuario/carrito/eliminar/producto/:id', authMiddleware, roleMiddleware('User'), deleteProductIdShoppingCart);
 router.delete('/usuario/carrito/eliminar', authMiddleware, roleMiddleware('User'), deleteShoppingCart);
+router.patch('/usuario/carrito/procesar', authMiddleware, roleMiddleware('User'), processCustomerSale);
 
 module.exports = router;
