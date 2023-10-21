@@ -89,7 +89,7 @@ const createShoppingCart = async (req, res) => {
     }
 };
 
-const readShoppingCartId = async (req, res) => {
+const readShoppingCart = async (req, res) => {
     try {
         const { user } = req;
         const stateShoppingCart = await StateModel.findOne({
@@ -130,7 +130,63 @@ const readShoppingCartId = async (req, res) => {
     }
 }
 
+const deleteProductIdShoppingCart = async (req, res) => {
+    try {
+        const { user } = req;
+        const { id } = req.params;
+
+        const product = await ProductModel.findByPk(id);
+
+        if (!product) {
+            return res.status(404).send({ error: "Producto no encontrado." });
+        }
+
+        const stateShoppingCart = await StateModel.findOne({
+            where: {
+                nombre_estado: 'Carrito'
+            }
+        });
+
+        if (!stateShoppingCart) {
+            return res.status(404).send({ error: "Estado no encontrado." });
+        }
+
+        const shoppingCart = await SalesInvoiceModel.findOne({
+            where: {
+                ID_Cliente_FK: user.id,
+                ID_Estado_FK: stateShoppingCart.id
+            }
+        });
+
+        if (!shoppingCart) {
+            return res.status(404).send({ error: "Carrito de compras no encontrado." });
+        }
+
+        const shoppingDetailCart = await SalesDetailModel.findOne({
+            where: {
+                ID_Factura_Venta_FK: shoppingCart.id,
+                ID_Producto_FK: product.id
+            }
+        });
+
+        if (!shoppingDetailCart) {
+            return res.status(404).send({ error: "El producto no existe en el carrito." });
+        }
+
+        shoppingCart.total_factura -= shoppingDetailCart.subtotal_venta;
+        product.cantidad_stock += shoppingDetailCart.cantidad_producto;
+        await shoppingCart.save();
+        await product.save();
+        await shoppingDetailCart.destroy();
+
+        res.status(200).send({ msg: "El producto ha sido eliminado con éxito." });
+    } catch (error) {
+        res.status(500).send({ error: "Error interno del servidor." });
+    }
+};
+
 module.exports = { 
     createShoppingCart,
-    readShoppingCartId
+    readShoppingCart,
+    deleteProductIdShoppingCart
 }
