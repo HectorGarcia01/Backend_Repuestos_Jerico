@@ -303,7 +303,7 @@ const processCustomerSale = async (req, res) => {
         const salesInvoice = await SalesInvoiceModel.findOne({
             where: {
                 ID_Cliente_FK: user.id,
-                ID_Estado_FK: stateSalesInvoice.id
+                ID_Estado_FK: stateShoppingCart.id
             }
         });
 
