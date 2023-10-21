@@ -7,9 +7,11 @@ const employeeRoutes = require('./routes/employee.routes');
 const addressRoutes = require('./routes/address.routes');
 const authRoutes = require('./routes/auth.routes');
 const imagesRoutes = require('./routes/upload_images.routes');
+const shoppingRoutes = require('./routes/shopping.routes');
 const supplierRoutes = require('./routes/supplier.routes');
 const categoryRoutes = require('./routes/category.routes');
 const brandProductRoutes = require('./routes/brand_product.routes');
+const productLocation = require('./routes/product_location.routes');
 const productRoutes = require('./routes/product.routes');
 const inventroryRoutes = require('./routes/inventory.routes');
 
@@ -43,9 +45,11 @@ app.use(employeeRoutes);
 app.use(addressRoutes);
 app.use(authRoutes);
 app.use(imagesRoutes);
+app.use(shoppingRoutes);
 app.use(supplierRoutes);
 app.use(categoryRoutes);
 app.use(brandProductRoutes);
+app.use(productLocation);
 app.use(productRoutes);
 app.use(inventroryRoutes);
 

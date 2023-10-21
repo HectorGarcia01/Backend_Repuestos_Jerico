@@ -1,3 +1,4 @@
+const Sequelize = require('sequelize');
 const sharp = require('sharp');
 
 /**
@@ -27,7 +28,14 @@ const addUserAvatar = async (req, res) => {
         await user.save();
         res.status(200).send({ msg: "Foto de perfil guardada con éxito." });
     } catch (error) {
-        res.status(500).send({ error: "Error interno del servidor. " });
+        if (error instanceof Sequelize.ValidationError) {
+            const lenError = error.errors.find(validationError => validationError.validatorKey === 'len');
+            if (lenError) {
+                res.status(400).send({ error: "Error al procesar la imágen, por favor intenta con otra." });
+            }
+        } else {
+            res.status(500).send({ error: "Error interno del servidor. " });
+        }
     }
 };
 

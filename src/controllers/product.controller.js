@@ -3,6 +3,7 @@ const ProductModel = require('../models/product');
 const StateModel = require('../models/state');
 const CategoryModel = require('../models/category');
 const BrandProductModel = require('../models/brand_product');
+const ProductLocationModel = require('../models/product_location');
 
 /**
  * Función para registrar un nuevo producto
@@ -12,7 +13,8 @@ const BrandProductModel = require('../models/brand_product');
  *              Modelo Producto (product.js), 
  *              Modelo Estado (state.js),
  *              Modelo Categoria (category.js),
- *              Modelo Marca_Producto (brand_product.js)
+ *              Modelo Marca_Producto (brand_product.js),
+ *              Modelo Ubicacion_Producto (product_location.js)
  */
 
 const createProduct = async (req, res) => {
@@ -30,6 +32,7 @@ const createProduct = async (req, res) => {
             cantidad_stock,
             ID_Categoria_FK,
             ID_Marca_FK,
+            ID_Ubicacion_FK
         } = req.body;
 
         const category = await CategoryModel.findByPk(ID_Categoria_FK);
@@ -42,6 +45,12 @@ const createProduct = async (req, res) => {
 
         if (!brandProduct) {
             return res.status(404).send({ error: "Marca del producto no encontrada." });
+        }
+
+        const productLocation = await BrandProductModel.findByPk(ID_Ubicacion_FK);
+
+        if (!productLocation) {
+            return res.status(404).send({ error: "Ubicación del producto no encontrada." });
         }
 
         const stateProduct = await StateModel.findOne({
@@ -66,17 +75,18 @@ const createProduct = async (req, res) => {
             cantidad_stock,
             ID_Estado_FK: stateProduct.id,
             ID_Categoria_FK,
-            ID_Marca_FK
+            ID_Marca_FK,
+            ID_Ubicacion_FK
         });
 
-        res.status(201).send({ msg: "Se ha registrado un nuevo producto.", newProduct })
+        res.status(201).send({ msg: "Se ha registrado un nuevo producto.", newProduct });
     } catch (error) {
         if (error instanceof Sequelize.UniqueConstraintError) {
             res.status(400).send({ error: "¡El producto ya existe!" });
         } else if (error.status === 404) {
             res.status(error.status).send({ error: error.message });
         } else {
-            res.status(500).send({ error });
+            res.status(500).send({ error: "Error interno del servidor." });
         }
     }
 };
@@ -137,7 +147,7 @@ const readProductId = async (req, res) => {
 const updateProductId = async (req, res) => {
     try {
         const { id } = req.params;
-        const { ID_Categoria_FK, ID_Marca_FK } = req.body;
+        const { ID_Categoria_FK, ID_Marca_FK, ID_Ubicacion_FK } = req.body;
         const updates = Object.keys(req.body);
 
         const allowedUpdates = [
@@ -152,6 +162,7 @@ const updateProductId = async (req, res) => {
             'cantidad_stock',
             'ID_Categoria_FK',
             'ID_Marca_FK',
+            'ID_Ubicacion_FK'
         ];
         const isValidOperation = updates.every((update) => allowedUpdates.includes(update));
 
@@ -172,6 +183,14 @@ const updateProductId = async (req, res) => {
 
             if (!brandProduct) {
                 return res.status(404).send({ error: "Marca del producto no encontrada." });
+            }
+        }
+
+        if (ID_Ubicacion_FK) {
+            const productLocation = await ProductLocationModel.findByPk(ID_Ubicacion_FK);
+
+            if (!productLocation) {
+                return res.status(404).send({ error: "Ubicación del producto no encontrada." });
             }
         }
 
