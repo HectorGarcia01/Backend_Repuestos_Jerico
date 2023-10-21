@@ -1,6 +1,9 @@
 //Exportación de tipo de estados
 module.exports = [
-    { nombre_estado: 'Pendiente' },
-    { nombre_estado: 'Activo' },
-    { nombre_estado: 'Inactivo' }
+    { Tipo_Estado: 'Pendiente' },
+    { Tipo_Estado: 'Activo' },
+    { Tipo_Estado: 'Inactivo' },
+    { Tipo_Estado: 'Carrito' },
+    { Tipo_Estado: 'En proceso' },
+    { Tipo_Estado: 'Completado' }
 ]
