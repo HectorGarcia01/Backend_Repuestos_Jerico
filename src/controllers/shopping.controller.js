@@ -4,13 +4,13 @@ const ProductModel = require('../models/product');
 const StateModel = require('../models/state');
 
 /**
- * Función para registrar productos al carrito
+ * Función para registrar/actualizar productos en el carrito de compras
  * Fecha creación: 29/09/2023
  * Autor: Hector Armando García González
  * Referencias: 
  *              Modelo Factura_Venta (sales_invoice.js), 
  *              Modelo Detalle_Venta (sales_detail.js),
- *              
+ *              Modelo Estado (state.js)
  */
 
 const createShoppingCart = async (req, res) => {
@@ -89,6 +89,17 @@ const createShoppingCart = async (req, res) => {
     }
 };
 
+/**
+ * Función para ver todo el detalle del carrito de compras
+ * Fecha creación: 29/09/2023
+ * Autor: Hector Armando García González
+ * Referencias: 
+ *              Modelo Factura_Venta (sales_invoice.js), 
+ *              Modelo Detalle_Venta (sales_detail.js),
+ *              Modelo Producto (product.js),
+ *              Modelo Estado (state.js)
+ */
+
 const readShoppingCart = async (req, res) => {
     try {
         const { user } = req;
@@ -129,6 +140,16 @@ const readShoppingCart = async (req, res) => {
         res.status(500).send({ error: "Error interno del servidor." });
     }
 }
+
+/**
+ * Función para eliminar un producto del detalle del carrito de compras
+ * Fecha creación: 29/09/2023
+ * Autor: Hector Armando García González
+ * Referencias: 
+ *              Modelo Factura_Venta (sales_invoice.js), 
+ *              Modelo Detalle_Venta (sales_detail.js),
+ *              Modelo Estado (state.js)
+ */
 
 const deleteProductIdShoppingCart = async (req, res) => {
     try {
@@ -185,8 +206,80 @@ const deleteProductIdShoppingCart = async (req, res) => {
     }
 };
 
+/**
+ * Función para eliminar el carrito de compras
+ * Fecha creación: 29/09/2023
+ * Autor: Hector Armando García González
+ * Referencias: 
+ *              Modelo Factura_Venta (sales_invoice.js), 
+ *              Modelo Detalle_Venta (sales_detail.js),
+ *              Modelo Estado (state.js)
+ */
+
+const deleteShoppingCart = async (req, res) => {
+    try {
+        const { user } = req;
+
+        const stateShoppingCart = await StateModel.findOne({
+            where: {
+                nombre_estado: 'Carrito'
+            }
+        });
+
+        if (!stateShoppingCart) {
+            return res.status(404).send({ error: "Estado no encontrado." });
+        }
+
+        const shoppingCart = await SalesInvoiceModel.findOne({
+            where: {
+                ID_Cliente_FK: user.id,
+                ID_Estado_FK: stateShoppingCart.id
+            },
+            include: [{
+                model: SalesDetailModel,
+                as: 'detalles_venta',
+                include: {
+                    model: ProductModel,
+                    as: 'producto',
+                }
+            }]
+        });
+
+        if (!shoppingCart) {
+            return res.status(404).send({ error: "Carrito de compras no encontrado." });
+        }
+
+        const inactiveShoppingCart = await StateModel.findOne({
+            where: {
+                nombre_estado: "Inactivo"
+            }
+        });
+
+        if (!inactiveShoppingCart) {
+            return res.status(404).send({ error: "Estado no encontrado." });
+        }
+
+        for (const detail of shoppingCart.detalles_venta) {
+            const product = await ProductModel.findByPk(detail.producto.id);
+
+            if (product) {
+                product.cantidad_stock += detail.cantidad_producto;
+                await product.save();
+            }
+        }
+
+        shoppingCart.ID_Estado_FK = inactiveShoppingCart.id;
+        await shoppingCart.save();
+        
+        res.status(200).send({ msg: "El carrito ha sido eliminado con éxito." });
+    } catch (error) {
+        res.status(500).send({ error: error.message });
+    }
+};
+
 module.exports = { 
     createShoppingCart,
     readShoppingCart,
-    deleteProductIdShoppingCart
+    deleteProductIdShoppingCart,
+    deleteShoppingCart
 }
