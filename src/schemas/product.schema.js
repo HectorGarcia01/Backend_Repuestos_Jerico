@@ -58,6 +58,12 @@ const productSchema = Joi.object({
         .error((error) => {
             return customError("La marca debe de ser numérica y no debe de ser negativo.", error);
         }),
+    ID_Ubicacion_FK: Joi.number()
+        .integer()
+        .min(1)
+        .error((error) => {
+            return customError("La marca debe de ser numérica y no debe de ser negativo.", error);
+        })
 });
 
 //Exportación del esquema de validación
