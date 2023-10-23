@@ -252,7 +252,7 @@ const deleteShoppingCart = async (req, res) => {
 
         const inactiveShoppingCart = await StateModel.findOne({
             where: {
-                nombre_estado: "Inactivo"
+                nombre_estado: "Cancelado"
             }
         });
 
@@ -330,6 +330,83 @@ const processCustomerSale = async (req, res) => {
         res.status(200).send({ msg: `Compra procesada con éxito, tu número de orden es ${orden}.` });
     } catch (error) {
         res.status(500).send({ error: "Error interno del servidor." });
+    }
+};
+
+/**
+ * Función para cancelar la compra del cliente (solo con estado pendiente)
+ * Fecha creación: 29/09/2023
+ * Autor: Hector Armando García González
+ * Referencias: 
+ *              Modelo Factura_Venta (sales_invoice.js), 
+ *              Modelo Detalle_Venta (sales_detail.js),
+ *              Modelo Producto (product.js),
+ *              Modelo Estado (state.js)
+ */
+
+const cancelCustomerSaleId = async (req, res) => {
+    try {
+        const { user } = req;
+        const { id } = req.params;
+
+        const shopping = await SalesInvoiceModel.findOne({
+            where: {
+                id,
+                ID_Cliente_FK: user.id
+            },
+            include: [{
+                model: SalesDetailModel,
+                as: 'detalles_venta',
+                include: {
+                    model: ProductModel,
+                    as: 'producto',
+                }
+            }]
+        });
+
+        if (!shopping) {
+            return res.status(404).send({ error: "Compra no encontrada." });
+        }
+
+        const stateShopping = await StateModel.findOne({
+            where: {
+                nombre_estado: 'Pendiente'
+            }
+        });
+
+        if (!stateShopping) {
+            return res.status(404).send({ error: "Estado no encontrado." });
+        }
+
+        if (shopping.ID_Estado_FK !== stateShopping.id) {
+            return res.status(404).send({ error: "Lo siento, no puedes cancelar esta compra." });
+        }
+        
+        const cancelStateShopping = await StateModel.findOne({
+            where: {
+                nombre_estado: 'Cancelado'
+            }
+        });
+
+        if (!cancelStateShopping) {
+            return res.status(404).send({ error: "Estado no encontrado." });
+        }
+
+        shopping.ID_Estado_FK = cancelStateShopping.id;
+        await shopping.save();
+
+        for (const detail of shopping.detalles_venta) {
+            const product = await ProductModel.findByPk(detail.producto.id);
+
+            if (product) {
+                product.cantidad_stock += detail.cantidad_producto;
+                await product.save();
+            }
+        }
+
+        res.status(200).send({ msg: "Su compra ha sido cancelada." });
+    } catch (error) {
+        res.status(500).send({ error:error.message });
     }
 };
 
@@ -458,6 +535,7 @@ module.exports = {
     deleteProductIdShoppingCart,
     deleteShoppingCart,
     processCustomerSale,
+    cancelCustomerSaleId,
     shoppingHistory,
     shoppingHistoryId
 }
