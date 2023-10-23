@@ -2,6 +2,7 @@ const SalesInvoiceModel = require('../models/sales_invoice');
 const SalesDetailModel = require('../models/sales_detail');
 const ProductModel = require('../models/product');
 const StateModel = require('../models/state');
+const { Sequelize } = require('sequelize');
 
 /**
  * Función para registrar/actualizar productos en el carrito de compras
@@ -332,10 +333,131 @@ const processCustomerSale = async (req, res) => {
     }
 };
 
+/**
+ * Función para ver el historial de compra del cliente
+ * Fecha creación: 29/09/2023
+ * Autor: Hector Armando García González
+ * Referencias: 
+ *              Modelo Factura_Venta (sales_invoice.js), 
+ *              Modelo Estado (state.js)
+ */
+
+const shoppingHistory = async (req, res) => {
+    try {
+        const { user } = req;
+        const inactiveStatusShopping = await StateModel.findOne({
+            where: {
+                nombre_estado: 'Inactivo'
+            }
+        });
+
+        const carritoStatusShopping = await StateModel.findOne({
+            where: {
+                nombre_estado: 'Carrito'
+            }
+        });
+
+        if (!inactiveStatusShopping || !carritoStatusShopping) {
+            return res.status(404).send({ error: "Estado no encontrado." });
+        }
+
+        const customerPurchase = await SalesInvoiceModel.findAll({
+            where: {
+                ID_Cliente_FK: user.id,
+                ID_Estado_FK: {
+                    [Sequelize.Op.notIn]: [inactiveStatusShopping, carritoStatusShopping]
+                }
+            },
+            attributes: ['id', 'numero_orden', 'total_factura'],
+            include: {
+                model: StateModel,
+                as: 'estado',
+                attributes: ['id', 'nombre_estado']
+            }
+        });
+
+        if (customerPurchase.length === 0) {
+            return res.status(404).send({ error: "No tienes ninguna compra procesada." });
+        }
+
+        res.status(200).send({ shoppingHistory: customerPurchase });
+    } catch (error) {
+        res.status(500).send({ error: "Error interno del servidor." });
+    }
+};
+
+/**
+ * Función para ver el detalle de compra por id del cliente
+ * Fecha creación: 29/09/2023
+ * Autor: Hector Armando García González
+ * Referencias: 
+ *              Modelo Factura_Venta (sales_invoice.js), 
+ *              Modelo Detalle_Venta (sales_detail.js),
+ *              Modelo Producto (product.js)
+ *              Modelo Estado (state.js)
+ */
+
+const shoppingHistoryId = async (req, res) => {
+    try {
+        const { user } = req;
+
+        const inactiveStatusShopping = await StateModel.findOne({
+            where: {
+                nombre_estado: 'Inactivo'
+            }
+        });
+
+        const carritoStatusShopping = await StateModel.findOne({
+            where: {
+                nombre_estado: 'Carrito'
+            }
+        });
+
+        if (!inactiveStatusShopping || !carritoStatusShopping) {
+            return res.status(404).send({ error: "Estado no encontrado." });
+        }
+
+        const shoppingDetail = await SalesInvoiceModel.findOne({
+            where: {
+                ID_Cliente_FK: user.id,
+                ID_Estado_FK: {
+                    [Sequelize.Op.notIn]: [inactiveStatusShopping, carritoStatusShopping]
+                }
+            },
+            attributes: ['id', 'total_factura'],
+            include: [{
+                model: SalesDetailModel,
+                as: 'detalles_venta',
+                attributes: ['id', 'cantidad_producto', 'precio_unitario', 'subtotal_venta'],
+                include: {
+                    model: ProductModel,
+                    as: 'producto',
+                    attributes: ['id', 'nombre_producto', 'descripcion_producto']
+                }
+            },
+                {
+                    model: StateModel,
+                    as: 'estado',
+                    attributes: ['id', 'nombre_estado']
+                }]
+        });
+
+        if (!shoppingDetail) {
+            return res.status(404).send({ error: "Detalle de compra no encontrado." });
+        }
+
+        res.status(200).send({ shoppingDetail });
+    } catch (error) {
+        res.status(500).send({ error: "Error interno del servidor." });
+    }
+};
+
 module.exports = { 
     createShoppingCart,
     readShoppingCart,
     deleteProductIdShoppingCart,
     deleteShoppingCart,
-    processCustomerSale
+    processCustomerSale,
+    shoppingHistory,
+    shoppingHistoryId
 }
