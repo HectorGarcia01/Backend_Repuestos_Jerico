@@ -5,7 +5,9 @@ const {
     readShoppingCart,
     deleteProductIdShoppingCart,
     deleteShoppingCart,
-    processCustomerSale
+    processCustomerSale,
+    shoppingHistory,
+    shoppingHistoryId
 } = require('../controllers/shopping.controller');
 // const { shoppingSchema, updateShoppingSchema } = require('../schemas/shopping.schema');
 const validateMiddleware = require('../middlewares/validate');
@@ -20,6 +22,8 @@ router.post(
     createShoppingCart
 );
 router.get('/usuario/carrito/ver', authMiddleware, roleMiddleware('User'), readShoppingCart);
+router.get('/usuario/historial/compras', authMiddleware, roleMiddleware('User'), shoppingHistory);
+router.get('/usuario/historial/compras/:id', authMiddleware, roleMiddleware('User'), shoppingHistoryId);
 router.delete('/usuario/carrito/eliminar/producto/:id', authMiddleware, roleMiddleware('User'), deleteProductIdShoppingCart);
 router.delete('/usuario/carrito/eliminar', authMiddleware, roleMiddleware('User'), deleteShoppingCart);
 router.patch('/usuario/carrito/procesar', authMiddleware, roleMiddleware('User'), processCustomerSale);
