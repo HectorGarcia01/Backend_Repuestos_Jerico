@@ -132,7 +132,7 @@ const readShoppingCart = async (req, res) => {
         });
         
         if (!shoppingDetailCart) {
-            return res.status(404).send({ error: "Detalle del carrito de compras no encontrado." });
+            return res.status(404).send({ error: "Carrito de compras vacío." });
         }
 
         res.status(200).send({ shoppingDetailCart });
@@ -246,7 +246,7 @@ const deleteShoppingCart = async (req, res) => {
         });
 
         if (!shoppingCart) {
-            return res.status(404).send({ error: "Carrito de compras no encontrado." });
+            return res.status(404).send({ error: "Carrito de compras vacío." });
         }
 
         const inactiveShoppingCart = await StateModel.findOne({
@@ -308,7 +308,7 @@ const processCustomerSale = async (req, res) => {
         });
 
         if (!salesInvoice) {
-            return res.status(404).send({ error: "Carrito de compras no encontrado." });
+            return res.status(404).send({ error: "Carrito de compras vacío." });
         }
 
         const stateSalesInvoice = await StateModel.findOne({
@@ -321,10 +321,12 @@ const processCustomerSale = async (req, res) => {
             return res.status(404).send({ error: "Estado no encontrado." });
         }
 
+        const orden = `JRC-${user.id}-${salesInvoice.id}`;
+        salesInvoice.numero_orden = orden;
         salesInvoice.ID_Estado_FK = stateSalesInvoice.id;
         await salesInvoice.save();
 
-        res.status(200).send({ msg: "Compra procesada con éxito." });
+        res.status(200).send({ msg: `Compra procesada con éxito, tu número de orden es ${orden}.` });
     } catch (error) {
         res.status(500).send({ error: "Error interno del servidor." });
     }
