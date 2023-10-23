@@ -6,6 +6,7 @@ const {
     deleteProductIdShoppingCart,
     deleteShoppingCart,
     processCustomerSale,
+    cancelCustomerSaleId,
     shoppingHistory,
     shoppingHistoryId
 } = require('../controllers/shopping.controller');
@@ -26,6 +27,7 @@ router.get('/usuario/historial/compras', authMiddleware, roleMiddleware('User'),
 router.get('/usuario/historial/compras/:id', authMiddleware, roleMiddleware('User'), shoppingHistoryId);
 router.delete('/usuario/carrito/eliminar/producto/:id', authMiddleware, roleMiddleware('User'), deleteProductIdShoppingCart);
 router.delete('/usuario/carrito/eliminar', authMiddleware, roleMiddleware('User'), deleteShoppingCart);
+router.delete('/usuario/compra/cancelar/:id', authMiddleware, roleMiddleware('User'), cancelCustomerSaleId);
 router.patch('/usuario/carrito/procesar', authMiddleware, roleMiddleware('User'), processCustomerSale);
 
 module.exports = router;
