@@ -252,7 +252,7 @@ const deleteShoppingCart = async (req, res) => {
 
         const inactiveShoppingCart = await StateModel.findOne({
             where: {
-                nombre_estado: "Cancelado"
+                nombre_estado: "Inactivo"
             }
         });
 
@@ -406,7 +406,7 @@ const cancelCustomerSaleId = async (req, res) => {
 
         res.status(200).send({ msg: "Su compra ha sido cancelada." });
     } catch (error) {
-        res.status(500).send({ error:error.message });
+        res.status(500).send({ error: "Error interno del servidor." });
     }
 };
 
@@ -422,6 +422,7 @@ const cancelCustomerSaleId = async (req, res) => {
 const shoppingHistory = async (req, res) => {
     try {
         const { user } = req;
+
         const inactiveStatusShopping = await StateModel.findOne({
             where: {
                 nombre_estado: 'Inactivo'
@@ -442,7 +443,7 @@ const shoppingHistory = async (req, res) => {
             where: {
                 ID_Cliente_FK: user.id,
                 ID_Estado_FK: {
-                    [Sequelize.Op.notIn]: [inactiveStatusShopping, carritoStatusShopping]
+                    [Sequelize.Op.notIn]: [inactiveStatusShopping.id, carritoStatusShopping.id]
                 }
             },
             attributes: ['id', 'numero_orden', 'total_factura'],
@@ -477,6 +478,7 @@ const shoppingHistory = async (req, res) => {
 const shoppingHistoryId = async (req, res) => {
     try {
         const { user } = req;
+        const { id } = req.params;
 
         const inactiveStatusShopping = await StateModel.findOne({
             where: {
@@ -496,9 +498,10 @@ const shoppingHistoryId = async (req, res) => {
 
         const shoppingDetail = await SalesInvoiceModel.findOne({
             where: {
+                id,
                 ID_Cliente_FK: user.id,
                 ID_Estado_FK: {
-                    [Sequelize.Op.notIn]: [inactiveStatusShopping, carritoStatusShopping]
+                    [Sequelize.Op.notIn]: [inactiveStatusShopping.id, carritoStatusShopping.id]
                 }
             },
             attributes: ['id', 'total_factura'],
@@ -525,7 +528,7 @@ const shoppingHistoryId = async (req, res) => {
 
         res.status(200).send({ shoppingDetail });
     } catch (error) {
-        res.status(500).send({ error: "Error interno del servidor." });
+        res.status(500).send({ error:error.message });
     }
 };
 
