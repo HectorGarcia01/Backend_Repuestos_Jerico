@@ -23,6 +23,10 @@ const Factura_Venta = db.define(`JHSGR_Factura_Venta`, {
         type: DataTypes.INTEGER,
         allowNull: true
     },
+    numero_orden: {
+        type: DataTypes.STRING(100),
+        allowNull: true
+    },
     total_factura: {
         type: DataTypes.DOUBLE,
         allowNull: false
