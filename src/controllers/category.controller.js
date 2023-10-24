@@ -51,7 +51,13 @@ const createCategory = async (req, res) => {
 
 const readCategories = async (req, res) => {
     try {
-        const categories = await CategoryModel.findAll({});
+        const categories = await CategoryModel.findAll({
+            include: [{
+                model: StateModel,
+                as: 'estado',
+                attributes: ['id', 'nombre_estado']
+            }]
+        });
 
         if (categories.length === 0) {
             return res.status(404).send({ error: "No hay categorías registradas." });
@@ -60,6 +66,43 @@ const readCategories = async (req, res) => {
         res.status(200).send({ categories });
     } catch (error) {
         res.status(500).send({ errr: "Error interno del servidor.", error });
+    }
+};
+
+/**
+ * Función para ver categorías por paginación
+ * Fecha creación: 22/08/2023
+ * Autor: Hector Armando García González
+ * Referencias:
+ *              Modelo Categoría (category.js), 
+ */
+
+const readCategoriesPagination = async (req, res) => {
+    try {
+        const { page, pageSize } = req.query;
+        const pageValue = req.query.page ? parseInt(page) : 1;
+        const pageSizeValue = req.query.pageSize ? parseInt(pageSize) : 6;
+
+        const count = await CategoryModel.count();
+        const categories = await CategoryModel.findAll({
+            include: [{
+                model: StateModel,
+                as: 'estado',
+                attributes: ['id', 'nombre_estado']
+            }],
+            offset: (pageValue - 1) * pageSizeValue,
+            limit: pageSizeValue
+        });
+
+        if (categories.length === 0) {
+            return res.status(404).send({ error: "No hay categorías registradas." });
+        }
+
+        const totalPages = Math.ceil(count / pageSizeValue);
+
+        res.status(200).send({ categories, currentPage: pageValue, totalPages });
+    } catch (error) {
+        res.status(500).send({ error: "Error interno del servidor." });
     }
 };
 
@@ -156,6 +199,7 @@ const deleteCategoryId = async (req, res) => {
 module.exports = {
     createCategory,
     readCategories,
+    readCategoriesPagination,
     readCategoryId,
     updateCategoryId,
     deleteCategoryId

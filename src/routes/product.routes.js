@@ -3,6 +3,7 @@ const router = new express.Router();
 const {
     createProduct,
     readProducts,
+    readProductsPagination,
     readProductId,
     updateProductId,
     deleteProductId
@@ -54,6 +55,7 @@ router.patch(
 
 //Rutas (endpoints) para el home
 router.get('/usuario/ver/productos', readProducts);
+router.get('/usuario/ver/productos/paginacion', readProductsPagination);
 router.get('/usuario/ver/producto/:id', readProductId);
 
 module.exports = router;
