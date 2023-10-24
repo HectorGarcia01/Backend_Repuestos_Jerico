@@ -111,6 +111,26 @@ const readProfile = async (req, res) => {
 };
 
 /**
+ * Función para ver todos los clientes registrados
+ * Fecha creación: 22/08/2023
+ * Autor: Hector Armando García González
+ */
+
+const readCustomers = async (req, res) => {
+    try {
+        const customers = await CustomerModel.findAll({});
+
+        if (customers.length === 0) {
+            return res.status(404).send({ error: "No hay clientes." });
+        }
+
+        res.status(200).send({ customers });
+    } catch (error) {
+        res.status(500).send({ error: "Error interno del servidor." });
+    }
+};
+
+/**
  * Función para actualizar datos del cliente
  * Fecha creación: 22/08/2023
  * Autor: Hector Armando García González
@@ -171,5 +191,6 @@ const updateCustomer = async (req, res) => {
 module.exports = {
     createCustomer,
     readProfile,
+    readCustomers,
     updateCustomer
 };
