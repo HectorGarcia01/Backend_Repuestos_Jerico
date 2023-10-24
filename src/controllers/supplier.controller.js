@@ -118,7 +118,7 @@ const readSuppliers = async (req, res) => {
         });
 
         if (suppliers.length === 0) {
-            return res.status(404).send({ error: "No hay proveedores." });
+            return res.status(404).send({ error: "No se encontraron proveedores que coincidan con los criterios de búsqueda." });
         }
 
         res.status(200).send({ suppliers });
