@@ -135,9 +135,42 @@ const updateProductLocationId = async (req, res) => {
     }
 };
 
+/**
+ * Función para eliminar lógicamente a una ubicación de estantería por id
+ * Fecha creación: 29/09/2023
+ * Autor: Hector Armando García González
+ * Referencias: 
+ *              Modelo Ubicacion_Producto (product_location.js), 
+ *              Modelo Estado (state.js)
+ */
+
+const deleteProductLocationId = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const productLocation = await ProductLocationModel.findByPk(id);
+
+        if (!productLocation) {
+            return res.status(404).send({ error: "Ubicación de producto no encontrada." });
+        }
+
+        const stateProductLocation = await StateModel.findOne({
+            where: {
+                nombre_estado: "Inactivo"
+            }
+        });
+
+        productLocation.ID_Estado_FK = stateProductLocation.id;
+        await productLocation.save();
+        res.status(200).send({ msg: "Ubicación de producto eliminada con éxito." });
+    } catch (error) {
+        res.status(500).send({ error: "Error interno del servidor." });
+    }
+};
+
 module.exports = {
     createProductLocation,
     readProductLocation,
     readProductLocationId,
-    updateProductLocationId
+    updateProductLocationId,
+    deleteProductLocationId
 };
