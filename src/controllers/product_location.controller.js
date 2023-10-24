@@ -99,8 +99,45 @@ const readProductLocationId = async (req, res) => {
     }
 };
 
+/**
+ * Función para actualizar una ubicación de estantería por id
+ * Fecha creación: 29/09/2023
+ * Autor: Hector Armando García González
+ * Referencias: 
+ *              Modelo Ubicacion_Producto (product_location.js), 
+ *              Modelo Estado (state.js)
+ */
+
+const updateProductLocationId = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const updates = Object.keys(req.body);
+
+        const allowedUpdates = ['nombre_estanteria'];
+        const isValidOperation = updates.every((update) => allowedUpdates.includes(update));
+
+        if (!isValidOperation) {
+            return res.status(400).send({ error: '¡Actualización inválida!' });
+        }
+
+        const productLocation = await ProductLocationModel.findByPk(id);
+
+        if (!productLocation) {
+            return res.status(404).send({ error: "Ubicación de producto no encontrada." });
+        }
+
+        updates.forEach((update) => productLocation[update] = req.body[update]);
+
+        await productLocation.save();
+        res.status(200).send({ msg: "Datos actualizados con éxito." });
+    } catch (error) {
+        res.status(500).send({ error: "Error interno del servidor." });
+    }
+};
+
 module.exports = {
     createProductLocation,
     readProductLocation,
-    readProductLocationId
+    readProductLocationId,
+    updateProductLocationId
 };
