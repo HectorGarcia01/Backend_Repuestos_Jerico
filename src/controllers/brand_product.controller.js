@@ -58,7 +58,7 @@ const readProductBrands = async (req, res) => {
 
         res.status(200).send({ productBrands });
     } catch (error) {
-        res.status(500).send({ errr: "Error interno del servidor.", error });
+        res.status(500).send({ error: "Error interno del servidor." });
     }
 };
 
