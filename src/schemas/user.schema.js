@@ -112,7 +112,6 @@ const updateUserSchema = Joi.object({
         }),
     telefono: Joi.string()
         .pattern(new RegExp('^[345][0-9]{7}'))
-        .required()
         .trim()
         .error((error) => {
             return customError("El teléfono debe de ser válido.", error);
