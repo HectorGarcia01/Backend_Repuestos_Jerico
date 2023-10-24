@@ -177,6 +177,11 @@ Producto.belongsTo(Ubicacion_Producto, {
 Producto.prototype.toJSON = function () {
     const product = { ...this.get() };
 
+    delete product.imagen_producto;
+    delete product.ID_Categoria_FK;
+    delete product.ID_Marca_FK;
+    delete product.ID_Ubicacion_FK;
+    delete product.ID_Estado_FK;
     delete product.createdAt;
     delete product.updatedAt;
 

@@ -95,19 +95,17 @@ const readSuppliers = async (req, res) => {
         }
 
         if (query.estado) {
-            const stateCustomer = await StateModel.findOne({
+            const stateSupplier = await StateModel.findOne({
                 where: {
                     nombre_estado: query.estado
                 }
             });
 
-            if (!stateCustomer) {
+            if (!stateSupplier) {
                 return res.status(404).send({ error: "Estado no encontrado." });
             }
 
-            where.ID_Estado_FK = {
-                [Sequelize.Op.like]: `%${stateCustomer.id}%`
-            }
+            where.ID_Estado_FK = stateSupplier.id
         }
 
         const suppliers = await SupplierModel.findAll({
@@ -120,7 +118,7 @@ const readSuppliers = async (req, res) => {
         });
 
         if (suppliers.length === 0) {
-            return res.status(404).send({ error: "No hay proveedores." });
+            return res.status(404).send({ error: "No se encontraron proveedores que coincidan con los criterios de búsqueda." });
         }
 
         res.status(200).send({ suppliers });
