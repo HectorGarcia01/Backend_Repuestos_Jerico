@@ -11,10 +11,13 @@ const customError = require('../utils/custom_error');
 
 const productBrandSchema = Joi.object({
     nombre_marca: Joi.string()
+        .pattern(new RegExp('^[^\\[\\]<>(){}_=\\\\|\\\'\';]+$'))
+        .min(3)
+        .max(50)
         .required()
         .trim()
         .error((error) => {
-            return customError("La marca de producto es obligatoria.", error);
+            return customError("La marca de producto es obligatoria, debe de tener un mínimo de 3 y un máximo de 50 carácteres.", error);
         })
 });
 
@@ -28,9 +31,12 @@ const productBrandSchema = Joi.object({
 
 const updateProductBrandSchema = Joi.object({
     nombre_marca: Joi.string()
+        .pattern(new RegExp('^[^\\[\\]<>(){}_=\\\\|\\\'\';]+$'))
+        .min(3)
+        .max(50)
         .trim()
         .error((error) => {
-            return customError("Marca de producto inválida.", error);
+            return customError("Marca de producto debe de tener un mínimo de 3 y un máximo de 50 carácteres.", error);
         })
 });
 
