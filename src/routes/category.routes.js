@@ -3,6 +3,7 @@ const router = new express.Router();
 const {
     createCategory,
     readCategories,
+    readCategoriesPagination,
     readCategoryId,
     updateCategoryId,
     deleteCategoryId
@@ -54,6 +55,7 @@ router.patch(
 
 //Configuración de rutas (endpoints) para el home
 router.get('/usuario/ver/categorias', readCategories);
+router.get('/usuario/ver/categorias/paginacion', readCategoriesPagination);
 router.get('/usuario/ver/categoria/:id', readCategoryId);
 
 module.exports = router;
