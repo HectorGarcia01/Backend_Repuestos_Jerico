@@ -4,6 +4,7 @@ const {
     createCustomer,
     readProfile,
     readCustomers,
+    readCustomerId,
     updateCustomer
 } = require('../controllers/customer.controller');
 const { userSchema, updateUserSchema } = require('../schemas/user.schema');
@@ -18,6 +19,8 @@ router.patch('/usuario/actualizar/perfil', authMiddleware, roleMiddleware('User'
 
 //Enpoints para el admin/superAdmin
 router.get('/admin/ver/clientes', authMiddleware, roleMiddleware('Admin'), readCustomers);
+router.get('/admin/ver/cliente/:id', authMiddleware, roleMiddleware('Admin'), readCustomerId);
 router.get('/superAdmin/ver/clientes', authMiddleware, roleMiddleware('SuperAdmin'), readCustomers);
+router.get('/superAdmin/ver/cliente/:id', authMiddleware, roleMiddleware('SuperAdmin'), readCustomerId);
 
 module.exports = router;
