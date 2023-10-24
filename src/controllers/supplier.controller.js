@@ -95,17 +95,17 @@ const readSuppliers = async (req, res) => {
         }
 
         if (query.estado) {
-            const stateCustomer = await StateModel.findOne({
+            const stateSupplier = await StateModel.findOne({
                 where: {
                     nombre_estado: query.estado
                 }
             });
 
-            if (!stateCustomer) {
+            if (!stateSupplier) {
                 return res.status(404).send({ error: "Estado no encontrado." });
             }
 
-            where.ID_Estado_FK = stateCustomer.id
+            where.ID_Estado_FK = stateSupplier.id
         }
 
         const suppliers = await SupplierModel.findAll({
