@@ -117,13 +117,13 @@ const readProducts = async (req, res) => {
 
         if (query.precio_compra) {
             where.precio_compra = {
-                [Sequelize.Op.like]: `%${query.precio_compra}%`
+                [Sequelize.Op.gte]: query.precio_compra
             };
         }
 
         if (query.precio_venta) {
             where.precio_venta = {
-                [Sequelize.Op.like]: `%${query.precio_venta}%`
+                [Sequelize.Op.gte]: query.precio_venta
             };
         }
 
@@ -162,14 +162,67 @@ const readProducts = async (req, res) => {
                 return res.status(404).send({ error: "Estado no encontrado." });
             }
 
-            where.ID_Estado_FK = {
-                [Sequelize.Op.like]: `%${stateCustomer.id}%`
+            where.ID_Estado_FK = stateCustomer.id
+        }
+
+        if (query.categoria) {
+            const category = await CategoryModel.findOne({
+                where: {
+                    nombre_categoria: query.categoria
+                }
+            });
+
+            if (!category) {
+                return res.status(404).send({ error: "Categoría no encontrada." });
             }
+
+            where.ID_Categoria_FK = category.id;
+        }
+
+        if (query.marca) {
+            const brandProduct = await BrandProductModel.findOne({
+                where: {
+                    nombre_marca: query.marca
+                }
+            });
+
+            if (!brandProduct) {
+                return res.status(404).send({ error: "Marca no encontrada." });
+            }
+
+            where.ID_Marca_FK = brandProduct.id;
+        }
+
+        if (query.ubicacion) {
+            const productLocation = await ProductLocationModel.findOne({
+                where: {
+                    nombre_estanteria: query.ubicacion
+                }
+            });
+
+            if (!productLocation) {
+                return res.status(404).send({ error: "Ubicación no encontrada." });
+            }
+
+            where.ID_Ubicacion_FK = productLocation.id;
         }
 
         const products = await ProductModel.findAll({ 
             where,
             include: [{
+                model: CategoryModel,
+                as: 'categoria',
+                attributes: ['id', 'nombre_categoria']
+            }, {
+                model: BrandProductModel,
+                as: 'marca',
+                attributes: ['id', 'nombre_marca']
+            }, {
+                model: ProductLocationModel,
+                as: 'ubicacion_categoria',
+                attributes: ['id', 'nombre_estanteria']
+            },
+            {
                 model: StateModel,
                 as: 'estado',
                 attributes: ['id', 'nombre_estado']
@@ -177,7 +230,7 @@ const readProducts = async (req, res) => {
         });
 
         if (products.length === 0) {
-            return res.status(404).send({ error: "No hay productos registrados." });
+            return res.status(404).send({ error: "No se encontraron productos que coincidan con los criterios de búsqueda." });
         }
 
         res.status(200).send({ products });
