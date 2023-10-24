@@ -4,7 +4,8 @@ const {
     createProductLocation,
     readProductLocation,
     readProductLocationId,
-    updateProductLocationId
+    updateProductLocationId,
+    deleteProductLocationId
 } = require('../controllers/product_location.controller');
 const {
     productLocationSchema,
@@ -31,6 +32,7 @@ router.patch(
     validateMiddleware(updateProductLocationSchema),
     updateProductLocationId
 );
+router.delete('/superAdmin/eliminar/ubicacion/:id', authMiddleware, roleMiddleware('SuperAdmin'), deleteProductLocationId);
 
 //Configuración de rutas (endpoints) para el Admin
 router.post(
