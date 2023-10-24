@@ -105,9 +105,7 @@ const readSuppliers = async (req, res) => {
                 return res.status(404).send({ error: "Estado no encontrado." });
             }
 
-            where.ID_Estado_FK = {
-                [Sequelize.Op.like]: `%${stateCustomer.id}%`
-            }
+            where.ID_Estado_FK = stateCustomer.id
         }
 
         const suppliers = await SupplierModel.findAll({
