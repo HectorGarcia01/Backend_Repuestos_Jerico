@@ -13,7 +13,9 @@ const categoryRoutes = require('./routes/category.routes');
 const brandProductRoutes = require('./routes/brand_product.routes');
 const productLocation = require('./routes/product_location.routes');
 const productRoutes = require('./routes/product.routes');
-const inventroryRoutes = require('./routes/inventory.routes');
+const salesInvoiceRoutes = require('./routes/sales_invoice.routes');
+const inventoryRoutes = require('./routes/inventory.routes');
+// const kpiRoutes = require('./routes/kpi.routes');
 
 const app = express();
 
@@ -51,7 +53,9 @@ app.use(categoryRoutes);
 app.use(brandProductRoutes);
 app.use(productLocation);
 app.use(productRoutes);
-app.use(inventroryRoutes);
+app.use(salesInvoiceRoutes);
+app.use(inventoryRoutes);
+// app.use(kpiRoutes);
 
 //Configuración del manejo de rutas inexistentes
 app.get('*', (req, res) => {
