@@ -138,6 +138,58 @@ const readProducts = async (req, res) => {
 };
 
 /**
+ * Función para ver los productos por paginación
+ * Fecha creación: 29/09/2023
+ * Autor: Hector Armando García González
+ * Referencias:
+ *              Modelo Producto (product.js), 
+ *              Función buildWhereClause (build_where_clause.js)
+ */
+
+const readProductsPagination = async (req, res) => {
+    try {
+        const { page, pageSize } = req.query;
+        const pageValue = req.query.page ? parseInt(page) : 1;
+        const pageSizeValue = req.query.pageSize ? parseInt(pageSize) : 6;
+        const where = await buildWhereClause(req.query);
+
+        const count = await ProductModel.count();
+        const products = await ProductModel.findAll({
+            where,
+            include: [{
+                model: CategoryModel,
+                as: 'categoria',
+                attributes: ['id', 'nombre_categoria']
+            }, {
+                model: BrandProductModel,
+                as: 'marca',
+                attributes: ['id', 'nombre_marca']
+            }, {
+                model: ProductLocationModel,
+                as: 'ubicacion_categoria',
+                attributes: ['id', 'nombre_estanteria']
+            },
+            {
+                model: StateModel,
+                as: 'estado',
+                attributes: ['id', 'nombre_estado']
+            }],
+            offset: (pageValue - 1) * pageSizeValue,
+            limit: pageSizeValue
+        });
+
+        if (products.length === 0) {
+            return res.status(404).send({ error: "No se encontraron productos que coincidan con los criterios de búsqueda." });
+        }
+
+        const totalPages = Math.ceil(count / pageSizeValue);
+        res.status(200).send({ products, currentPage: pageValue, totalPages });
+    } catch (error) {
+        res.status(500).send({ error: "Error interno del servidor." });
+    }
+};
+
+/**
  * Función para ver un producto por ID
  * Fecha creación: 29/09/2023
  * Autor: Hector Armando García González
@@ -267,6 +319,7 @@ const deleteProductId = async (req, res) => {
 module.exports = {
     createProduct,
     readProducts,
+    readProductsPagination,
     readProductId,
     updateProductId,
     deleteProductId
