@@ -177,7 +177,7 @@ const deleteProductPhoto = async (req, res) => {
 
         product.imagen_producto = null;
 
-        await user.save();
+        await product.save();
         res.status(200).send({ msg: "Imagen del producto eliminada con éxito." });
     } catch (error) {
         res.status(500).send({ error: "Error interno del servidor." });
