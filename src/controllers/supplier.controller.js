@@ -16,6 +16,7 @@ const createSupplier = async (req, res) => {
         const {
             nombre,
             apellido,
+            empresa,
             telefono,
             correo
         } = req.body;
@@ -33,6 +34,7 @@ const createSupplier = async (req, res) => {
         await SupplierModel.create({
             nombre,
             apellido,
+            empresa,
             telefono,
             correo,
             ID_Estado_FK: stateSupplier.id
@@ -59,7 +61,63 @@ const createSupplier = async (req, res) => {
 
 const readSuppliers = async (req, res) => {
     try {
-        const suppliers = await SupplierModel.findAll({});
+        const { query } = req;
+        const where = {};
+
+        if (query.nombre) {
+            where.nombre = {
+                [Sequelize.Op.like]: `%${query.nombre}%`
+            };
+        }
+
+        if (query.apellido) {
+            where.apellido = {
+                [Sequelize.Op.like]: `%${query.apellido}%`
+            };
+        }
+
+        if (query.telefono) {
+            where.telefono = {
+                [Sequelize.Op.like]: `%${query.telefono}%`
+            };
+        }
+
+        if (query.nit) {
+            where.nit = {
+                [Sequelize.Op.like]: `%${query.nit}%`
+            };
+        }
+
+        if (query.correo) {
+            where.correo = {
+                [Sequelize.Op.like]: `%${query.correo}%`
+            };
+        }
+
+        if (query.estado) {
+            const stateCustomer = await StateModel.findOne({
+                where: {
+                    nombre_estado: query.estado
+                }
+            });
+
+            if (!stateCustomer) {
+                return res.status(404).send({ error: "Estado no encontrado." });
+            }
+
+            where.ID_Estado_FK = {
+                [Sequelize.Op.like]: `%${stateCustomer.id}%`
+            }
+        }
+
+        const suppliers = await SupplierModel.findAll({
+            where,
+            include: [{
+                model: StateModel,
+                as: 'estado',
+                attributes: ['id', 'nombre_estado']
+            }]
+        });
 
         if (suppliers.length === 0) {
             return res.status(404).send({ error: "No hay proveedores." });
@@ -82,7 +140,13 @@ const readSuppliers = async (req, res) => {
 const readSupplierId = async (req, res) => {
     try {
         const { id } = req.params;
-        const supplier = await SupplierModel.findByPk(id);
+        const supplier = await SupplierModel.findByPk(id, {
+            include: [{
+                model: StateModel,
+                as: 'estado',
+                attributes: ['id', 'nombre_estado']
+            }]
+        });
 
         if (!supplier) {
             return res.status(404).send({ error: "Proveedor no encontrado." });
