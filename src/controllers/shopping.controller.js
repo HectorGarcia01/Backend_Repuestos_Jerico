@@ -327,7 +327,7 @@ const processCustomerSale = async (req, res) => {
         salesInvoice.ID_Estado_FK = stateSalesInvoice.id;
         await salesInvoice.save();
 
-        res.status(200).send({ msg: `Compra procesada con éxito, tu número de orden es ${orden}.` });
+        res.status(200).send({ msg: `Compra procesada con éxito, tu número de orden es ${orden}.`, orden });
     } catch (error) {
         res.status(500).send({ error: "Error interno del servidor." });
     }
@@ -528,7 +528,7 @@ const shoppingHistoryId = async (req, res) => {
 
         res.status(200).send({ shoppingDetail });
     } catch (error) {
-        res.status(500).send({ error:error.message });
+        res.status(500).send({ error: "Error interno del servidor." });
     }
 };
 
