@@ -3,7 +3,10 @@ const router = new express.Router();
 const {
     addUserAvatar,
     getUserAvatar,
-    deleteUserAvatar
+    deleteUserAvatar,
+    addProductPhoto,
+    getProductPhoto,
+    deleteProductPhoto
 } = require('../controllers/upload_images.controller');
 const authMiddleware = require('../middlewares/auth');
 const roleMiddleware = require('../middlewares/check_role');
@@ -43,6 +46,23 @@ router.get('/usuario/ver/fotoPerfil', authMiddleware, roleMiddleware('User'), ge
 router.delete('/usuario/eliminar/fotoPerfil', authMiddleware, roleMiddleware('User'), deleteUserAvatar);
 
 //Configuración de rutas (endpoints) para el producto
-
+router.post(
+    '/superAdmin/subir/foto/producto/:id',
+    authMiddleware,
+    roleMiddleware('SuperAdmin'),
+    uploadMiddleware,
+    addProductPhoto
+);
+router.post(
+    '/admin/subir/foto/producto/:id',
+    authMiddleware,
+    roleMiddleware('Admin'),
+    uploadMiddleware,
+    addProductPhoto
+);
+router.get('/superAdmin/ver/foto/producto/:id', authMiddleware, roleMiddleware('SuperAdmin'), getProductPhoto);
+router.get('/admin/ver/foto/producto/:id', authMiddleware, roleMiddleware('Admin'), getProductPhoto);
+router.delete('/superAdmin/eliminar/foto/producto/:id', authMiddleware, roleMiddleware('SuperAdmin'), deleteProductPhoto);
+router.delete('/admin/eliminar/foto/producto/:id', authMiddleware, roleMiddleware('Admin'), deleteProductPhoto);
 
 module.exports = router;
