@@ -42,4 +42,20 @@ Ubicacion_Producto.belongsTo(Estado, {
     as: 'estado'
 });
 
+/**
+ * Método personalizado para filtrar información
+ * Fecha creación: 29/09/2023
+ * Autor: Hector Armando García González
+ */
+
+Ubicacion_Producto.prototype.toJSON = function () {
+    const productLocation = { ...this.get() };
+
+    delete productLocation.ID_Estado_FK;
+    delete productLocation.createdAt;
+    delete productLocation.updatedAt;
+
+    return productLocation;
+};
+
 module.exports = Ubicacion_Producto;

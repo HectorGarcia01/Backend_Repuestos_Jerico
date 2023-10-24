@@ -19,7 +19,6 @@ const ProductLocationModel = require('../models/product_location');
 
 const createProduct = async (req, res) => {
     try {
-        const { user } = req;
         const {
             nombre_producto,
             codigo_producto,
@@ -101,7 +100,81 @@ const createProduct = async (req, res) => {
 
 const readProducts = async (req, res) => {
     try {
-        const products = await ProductModel.findAll({});
+        const { query } = req;
+        const where = {};
+
+        if (query.nombre) {
+            where.nombre_producto = {
+                [Sequelize.Op.like]: `%${query.nombre}%`
+            };
+        }
+
+        if (query.codigo) {
+            where.codigo_producto = {
+                [Sequelize.Op.like]: `%${query.codigo}%`
+            };
+        }
+
+        if (query.precio_compra) {
+            where.precio_compra = {
+                [Sequelize.Op.like]: `%${query.precio_compra}%`
+            };
+        }
+
+        if (query.precio_venta) {
+            where.precio_venta = {
+                [Sequelize.Op.like]: `%${query.precio_venta}%`
+            };
+        }
+
+        if (query.descripcion) {
+            where.descripcion_producto = {
+                [Sequelize.Op.like]: `%${query.descripcion}%`
+            };
+        }
+
+        if (query.medida) {
+            where.medida_producto = {
+                [Sequelize.Op.like]: `%${query.medida}%`
+            };
+        }
+
+        if (query.color) {
+            where.color_producto = {
+                [Sequelize.Op.like]: `%${query.color}%`
+            };
+        }
+
+        if (query.QR_producto) {
+            where.QR_producto = {
+                [Sequelize.Op.like]: `%${query.QR_producto}%`
+            };
+        }
+
+        if (query.estado) {
+            const stateCustomer = await StateModel.findOne({
+                where: {
+                    nombre_estado: query.estado
+                }
+            });
+
+            if (!stateCustomer) {
+                return res.status(404).send({ error: "Estado no encontrado." });
+            }
+
+            where.ID_Estado_FK = {
+                [Sequelize.Op.like]: `%${stateCustomer.id}%`
+            }
+        }
+
+        const products = await ProductModel.findAll({ 
+            where,
+            include: [{
+                model: StateModel,
+                as: 'estado',
+                attributes: ['id', 'nombre_estado']
+            }]
+        });
 
         if (products.length === 0) {
             return res.status(404).send({ error: "No hay productos registrados." });

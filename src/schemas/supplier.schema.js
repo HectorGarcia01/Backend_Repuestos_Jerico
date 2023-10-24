@@ -11,16 +11,30 @@ const customError = require('../utils/custom_error');
 
 const supplierSchema = Joi.object({
     nombre: Joi.string()
+        .pattern(new RegExp('^[^\\[\\]<>(){}_=\\\\|\\\'\';]+$'))
+        .min(3)
+        .max(30)
         .required()
         .trim()
         .error((error) => {
-            return customError("El nombre es obligatorio.", error);
+            return customError("El nombre es obligatorio, debe de tener un mínimo de 3 y un máximo de 30 carácteres.", error);
         }),
     apellido: Joi.string()
+        .pattern(new RegExp('^[^\\[\\]<>(){}_=\\\\|\\\'\';]+$'))
+        .min(3)
+        .max(30)
+        .trim()
+        .error((error) => {
+            return customError("El apellido, debe de tener un mínimo de 3 y un máximo de 30 carácteres.", error);
+        }),
+    empresa: Joi.string()
+        .pattern(new RegExp('^[^\\[\\]<>(){}_=\\\\|\\\'\';]+$'))
+        .min(3)
+        .max(50)
         .required()
         .trim()
         .error((error) => {
-            return customError("El apellido es obligatorio.", error);
+            return customError("La empresa es obligatoria, debe de tener un mínimo de 3 y un máximo de 50 carácteres.", error);
         }),
     telefono: Joi.string()
         .pattern(new RegExp('^[345][0-9]{7}'))
@@ -48,14 +62,28 @@ const supplierSchema = Joi.object({
 
 const updateSupplierSchema = Joi.object({
     nombre: Joi.string()
+        .pattern(new RegExp('^[^\\[\\]<>(){}_=\\\\|\\\'\';]+$'))
+        .min(3)
+        .max(30)
         .trim()
         .error((error) => {
-            return customError("Nombre inválido.", error);
+            return customError("El nombre debe de tener un mínimo de 3 y un máximo de 30 carácteres.", error);
         }),
     apellido: Joi.string()
+        .pattern(new RegExp('^[^\\[\\]<>(){}_=\\\\|\\\'\';]+$'))
+        .min(3)
+        .max(30)
         .trim()
         .error((error) => {
-            return customError("Apellido inválido.", error);
+            return customError("El apellido, debe de tener un mínimo de 3 y un máximo de 30 carácteres.", error);
+        }),
+    empresa: Joi.string()
+        .pattern(new RegExp('^[^\\[\\]<>(){}_=\\\\|\\\'\';]+$'))
+        .min(3)
+        .max(50)
+        .trim()
+        .error((error) => {
+            return customError("La empresa debe de tener un mínimo de 3 y un máximo de 50 carácteres.", error);
         }),
     telefono: Joi.string()
         .pattern(new RegExp('^[345][0-9]{7}'))

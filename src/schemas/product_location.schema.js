@@ -2,46 +2,46 @@ const Joi = require('joi');
 const customError = require('../utils/custom_error');
 
 /**
- * Esquema de validación de datos de marca de producto
+ * Esquema de validación de datos ubicación del producto
  * Fecha creación: 29/09/2023
  * Autor: Hector Armando García González
  * Referencias: 
  *              custom_error.js (para errores personalizados)
  */
 
-const productBrandSchema = Joi.object({
-    nombre_marca: Joi.string()
+const productLocationSchema = Joi.object({
+    nombre_estanteria: Joi.string()
         .pattern(new RegExp('^[^\\[\\]<>(){}_=\\\\|\\\'\';]+$'))
         .min(3)
-        .max(50)
+        .max(200)
         .required()
         .trim()
         .error((error) => {
-            return customError("La marca de producto es obligatoria, debe de tener un mínimo de 3 y un máximo de 50 carácteres.", error);
+            return customError("La ubicación del producto es obligatoria, debe de tener un mínimo de 3 y un máximo de 200 carácteres.", error);
         })
 });
 
 /**
- * Esquema de validación de actualización de datos de marca de producto
+ * Esquema de validación de actualización de datos de ubicación de producto
  * Fecha creación: 29/09/2023
  * Autor: Hector Armando García González
  * Referencias: 
  *              custom_error.js (para errores personalizados)
  */
 
-const updateProductBrandSchema = Joi.object({
-    nombre_marca: Joi.string()
+const updateProductLocationSchema = Joi.object({
+    nombre_estanteria: Joi.string()
         .pattern(new RegExp('^[^\\[\\]<>(){}_=\\\\|\\\'\';]+$'))
         .min(3)
-        .max(50)
+        .max(200)
         .trim()
         .error((error) => {
-            return customError("Marca de producto debe de tener un mínimo de 3 y un máximo de 50 carácteres.", error);
+            return customError("La ubicación de producto debe de tener un mínimo de 3 y un máximo de 200 carácteres.", error);
         })
 });
 
 //Exportación del esquema de validación
 module.exports = {
-    productBrandSchema,
-    updateProductBrandSchema
+    productLocationSchema,
+    updateProductLocationSchema
 };
