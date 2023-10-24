@@ -189,6 +189,44 @@ const readCustomers = async (req, res) => {
     }
 };
 
+/**
+ * Función para ver un cliente por id
+ * Fecha creación: 22/08/2023
+ * Autor: Hector Armando García González
+ * Referencias: 
+ *              Modelo Cliente (customer.js),
+ *              Modelo Municipio (municipality.js),
+ *              Modelo Departamento (department.js),
+ *              Modelo Estado (state.js)
+ */
+
+const readCustomerId = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const customer = await CustomerModel.findByPk(id, {
+            include: [{
+                model: MunicipalityModel,
+                as: 'municipio',
+                include: [{
+                    model: DepartmentModel,
+                    as: 'departamento'
+                }]
+            }, {
+                model: StateModel,
+                as: 'estado',
+                attributes: ['nombre_estado']
+            }]
+        });
+
+        if (!customer) {
+            return res.status(404).send({ error: "Cliente no encontrado." });
+        }
+
+        res.status(200).send({ customer });
+    } catch (error) {
+        res.status(500).send({ error: "Error interno del servidor." });
+    }
+};
 
 /**
  * Función para actualizar datos del cliente
@@ -252,5 +290,6 @@ module.exports = {
     createCustomer,
     readProfile,
     readCustomers,
+    readCustomerId,
     updateCustomer
 };
