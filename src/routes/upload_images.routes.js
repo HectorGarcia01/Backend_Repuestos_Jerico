@@ -65,4 +65,7 @@ router.get('/admin/ver/foto/producto/:id', authMiddleware, roleMiddleware('Admin
 router.delete('/superAdmin/eliminar/foto/producto/:id', authMiddleware, roleMiddleware('SuperAdmin'), deleteProductPhoto);
 router.delete('/admin/eliminar/foto/producto/:id', authMiddleware, roleMiddleware('Admin'), deleteProductPhoto);
 
+//Para productos en home
+router.get('/usuario/ver/foto/producto/:id', getProductPhoto);
+
 module.exports = router;
