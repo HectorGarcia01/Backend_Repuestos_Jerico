@@ -11,13 +11,22 @@ const customError = require('../utils/custom_error');
 
 const categorySchema = Joi.object({
     nombre_categoria: Joi.string()
+        .pattern(new RegExp('^[^\\[\\]<>(){}_=\\\\|\\\'\';]+$'))
+        .min(3)
+        .max(50)
         .required()
         .trim()
         .error((error) => {
-            return customError("El nombre de categoría es obligatorio.", error);
+            return customError("El nombre de categoría es obligatorio, debe de tener un mínimo de 3 y un máximo de 50 carácteres.", error);
         }),
     descripcion_categoria: Joi.string()
+        .pattern(new RegExp('^[^\\[\\]<>(){}_=\\\\|\\\'\';]+$'))
+        .min(10)
+        .max(200)
         .trim()
+        .error((error) => {
+            return customError("La descripción debe de tener un mínimo de 10 y un máximo de 200 carácteres.", error);
+        })
 });
 
 /**
@@ -30,14 +39,20 @@ const categorySchema = Joi.object({
 
 const updateCategorySchema = Joi.object({
     nombre_categoria: Joi.string()
+        .pattern(new RegExp('^[^\\[\\]<>(){}_=\\\\|\\\'\';]+$'))
+        .min(3)
+        .max(50)
         .trim()
         .error((error) => {
-            return customError("Nombre de categoría inválido.", error);
+            return customError("Nombre de categoría debe de tener un mínimo de 3 y un máximo de 50 carácteres.", error);
         }),
     descripcion_categoria: Joi.string()
+        .pattern(new RegExp('^[^\\[\\]<>(){}_=\\\\|\\\'\';]+$'))
+        .min(10)
+        .max(200)
         .trim()
         .error((error) => {
-            return customError("Descripción de categoría inválido.", error);
+            return customError("La descripción debe de tener un mínimo de 10 y un máximo de 200 carácteres.", error);
         }),
 });
 
