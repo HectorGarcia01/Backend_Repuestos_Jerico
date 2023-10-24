@@ -127,10 +127,64 @@ const updateEmployee = async (req, res) => {
 
 const readEmployees = async (req, res) => {
     try {
-        const employees = await EmployeeModel.findAll({});
+        const { query } = req;
+        const where = {};
+
+        if (query.nombre) {
+            where.nombre = {
+                [Sequelize.Op.like]: `%${query.nombre}%`
+            };
+        }
+
+        if (query.apellido) {
+            where.apellido = {
+                [Sequelize.Op.like]: `%${query.apellido}%`
+            };
+        }
+
+        if (query.telefono) {
+            where.telefono = {
+                [Sequelize.Op.like]: `%${query.telefono}%`
+            };
+        }
+
+        if (query.nit) {
+            where.nit = {
+                [Sequelize.Op.like]: `%${query.nit}%`
+            };
+        }
+
+        if (query.correo) {
+            where.correo = {
+                [Sequelize.Op.like]: `%${query.correo}%`
+            };
+        }
+
+        if (query.estado) {
+            const stateEmployee = await StateModel.findOne({
+                where: {
+                    nombre_estado: query.estado
+                }
+            });
+
+            if (!stateEmployee) {
+                return res.status(404).send({ error: "Estado no encontrado." });
+            }
+
+            where.ID_Estado_FK = stateEmployee.id
+        }
+
+        const employees = await EmployeeModel.findAll({
+            where,
+            include: [{
+                model: StateModel,
+                as: 'estado',
+                attributes: ['id', 'nombre_estado']
+            }]
+        });
 
         if (employees.length === 0) {
-            return res.status(404).send({ error: "No hay empleados." });
+            return res.status(404).send({ error: "No se encontraron empleados que coincidan con los criterios de búsqueda." });
         }
 
         res.status(200).send({ employees });
