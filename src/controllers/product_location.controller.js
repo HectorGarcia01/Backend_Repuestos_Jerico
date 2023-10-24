@@ -40,6 +40,36 @@ const createProductLocation = async (req, res) => {
     }
 };
 
+/**
+ * Función para ver todas las ubicaciones de estanterías
+ * Fecha creación: 29/09/2023
+ * Autor: Hector Armando García González
+ * Referencias: 
+ *              Modelo Ubicacion_Producto (product_location.js), 
+ *              Modelo Estado (state.js)
+ */
+
+const readProductLocation = async (req, res) => {
+    try {
+        const productLocation = await ProductLocationModel.findAll({
+            include: [{
+                model: StateModel,
+                as: 'estado',
+                attributes: ['id', 'nombre_estado']
+            }]
+        });
+
+        if (productLocation.length === 0) {
+            return res.status(404).send({ error: "No hay ubicaciones de productos registradas." });
+        }
+
+        res.status(200).send({ productLocation });
+    } catch (error) {
+        res.status(500).send({ errr: "Error interno del servidor.", error });
+    }
+};
+
 module.exports = {
     createProductLocation,
+    readProductLocation
 };
