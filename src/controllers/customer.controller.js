@@ -111,20 +111,120 @@ const readProfile = async (req, res) => {
 };
 
 /**
- * Función para ver todos los clientes registrados
+ * Función para ver todos los clientes registrados o por filtros
  * Fecha creación: 22/08/2023
  * Autor: Hector Armando García González
+ * Restricción: Solo el Admin y SuperAdmin acceden a este recurso
+ * Referencias: 
+ *              Modelo Estado (state.js),
+ *              Modelo Cliente (customer.js)
  */
 
 const readCustomers = async (req, res) => {
     try {
-        const customers = await CustomerModel.findAll({});
+        const { query } = req;
+        const where = { };
+
+        if (query.nombre) {
+            where.nombre = {
+                [Sequelize.Op.like]: `%${query.nombre}%`
+            };
+        }
+
+        if (query.apellido) {
+            where.apellido = {
+                [Sequelize.Op.like]: `%${query.apellido}%`
+            };
+        }
+
+        if (query.telefono) {
+            where.telefono = {
+                [Sequelize.Op.like]: `%${query.telefono}%`
+            };
+        }
+
+        if (query.nit) {
+            where.nit = {
+                [Sequelize.Op.like]: `%${query.nit}%`
+            };
+        }
+
+        if (query.correo) {
+            where.correo = {
+                [Sequelize.Op.like]: `%${query.correo}%`
+            };
+        }
+
+        if (query.estado) {
+            const stateCustomer = await StateModel.findOne({
+                where: {
+                    nombre_estado: query.estado
+                }
+            });
+
+            if (!stateCustomer) {
+                return res.status(404).send({ error: "Estado no encontrado." });
+            }
+
+            where.ID_Estado_FK = {
+                [Sequelize.Op.like]: `%${stateCustomer.id}%`
+            }
+        }
+
+        const customers = await CustomerModel.findAll({ 
+            where,
+            include: [{
+                model: StateModel,
+                as: 'estado',
+                attributes: ['id', 'nombre_estado']
+            }]
+        });
 
         if (customers.length === 0) {
-            return res.status(404).send({ error: "No hay clientes." });
+            return res.status(404).send({ error: "No se encontraron clientes que coincidan con los criterios de búsqueda." });
         }
 
         res.status(200).send({ customers });
+    } catch (error) {
+        res.status(500).send({ error: "Error interno del servidor." });
+    }
+};
+
+/**
+ * Función para ver un cliente por id
+ * Fecha creación: 22/08/2023
+ * Autor: Hector Armando García González
+ * Restricción: Solo el Admin y SuperAdmin acceden a este recurso
+ * Referencias: 
+ *              Modelo Cliente (customer.js),
+ *              Modelo Municipio (municipality.js),
+ *              Modelo Departamento (department.js),
+ *              Modelo Estado (state.js)
+ */
+
+const readCustomerId = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const customer = await CustomerModel.findByPk(id, {
+            include: [{
+                model: MunicipalityModel,
+                as: 'municipio',
+                include: [{
+                    model: DepartmentModel,
+                    as: 'departamento'
+                }]
+            }, {
+                model: StateModel,
+                as: 'estado',
+                attributes: ['nombre_estado']
+            }]
+        });
+
+        if (!customer) {
+            return res.status(404).send({ error: "Cliente no encontrado." });
+        }
+
+        res.status(200).send({ customer });
     } catch (error) {
         res.status(500).send({ error: "Error interno del servidor." });
     }
@@ -192,5 +292,6 @@ module.exports = {
     createCustomer,
     readProfile,
     readCustomers,
+    readCustomerId,
     updateCustomer
 };
