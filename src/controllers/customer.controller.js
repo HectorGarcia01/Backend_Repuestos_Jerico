@@ -114,6 +114,7 @@ const readProfile = async (req, res) => {
  * Función para ver todos los clientes registrados o por filtros
  * Fecha creación: 22/08/2023
  * Autor: Hector Armando García González
+ * Restricción: Solo el Admin y SuperAdmin acceden a este recurso
  * Referencias: 
  *              Modelo Estado (state.js),
  *              Modelo Cliente (customer.js)
@@ -193,6 +194,7 @@ const readCustomers = async (req, res) => {
  * Función para ver un cliente por id
  * Fecha creación: 22/08/2023
  * Autor: Hector Armando García González
+ * Restricción: Solo el Admin y SuperAdmin acceden a este recurso
  * Referencias: 
  *              Modelo Cliente (customer.js),
  *              Modelo Municipio (municipality.js),
