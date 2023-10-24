@@ -65,11 +65,42 @@ const readProductLocation = async (req, res) => {
 
         res.status(200).send({ productLocation });
     } catch (error) {
-        res.status(500).send({ errr: "Error interno del servidor.", error });
+        res.status(500).send({ error: "Error interno del servidor." });
+    }
+};
+
+/**
+ * Función para ver ubicación de estantería por id
+ * Fecha creación: 29/09/2023
+ * Autor: Hector Armando García González
+ * Referencias: 
+ *              Modelo Ubicacion_Producto (product_location.js), 
+ *              Modelo Estado (state.js)
+ */
+
+const readProductLocationId = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const productLocation = await ProductLocationModel.findByPk(id, {
+            include: [{
+                model: StateModel,
+                as: 'estado',
+                attributes: ['id', 'nombre_estado']
+            }]
+        });
+
+        if (!productLocation) {
+            return res.status(404).send({ error: "Marca de producto no encontrada." });
+        }
+
+        res.status(200).send({ productLocation });
+    } catch (error) {
+        res.status(500).send({ error: "Error interno del servidor." });
     }
 };
 
 module.exports = {
     createProductLocation,
-    readProductLocation
+    readProductLocation,
+    readProductLocationId
 };
