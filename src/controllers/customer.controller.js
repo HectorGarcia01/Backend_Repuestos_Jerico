@@ -111,17 +111,76 @@ const readProfile = async (req, res) => {
 };
 
 /**
- * Función para ver todos los clientes registrados
+ * Función para ver todos los clientes registrados o por filtros
  * Fecha creación: 22/08/2023
  * Autor: Hector Armando García González
+ * Referencias: 
+ *              Modelo Estado (state.js),
+ *              Modelo Cliente (customer.js)
  */
 
 const readCustomers = async (req, res) => {
     try {
-        const customers = await CustomerModel.findAll({});
+        const { query } = req;
+        const where = { };
+
+        if (query.nombre) {
+            where.nombre = {
+                [Sequelize.Op.like]: `%${query.nombre}%`
+            };
+        }
+
+        if (query.apellido) {
+            where.apellido = {
+                [Sequelize.Op.like]: `%${query.apellido}%`
+            };
+        }
+
+        if (query.telefono) {
+            where.telefono = {
+                [Sequelize.Op.like]: `%${query.telefono}%`
+            };
+        }
+
+        if (query.nit) {
+            where.nit = {
+                [Sequelize.Op.like]: `%${query.nit}%`
+            };
+        }
+
+        if (query.correo) {
+            where.correo = {
+                [Sequelize.Op.like]: `%${query.correo}%`
+            };
+        }
+
+        if (query.estado) {
+            const stateCustomer = await StateModel.findOne({
+                where: {
+                    nombre_estado: query.estado
+                }
+            });
+
+            if (!stateCustomer) {
+                return res.status(404).send({ error: "Estado no encontrado." });
+            }
+
+            where.ID_Estado_FK = {
+                [Sequelize.Op.like]: `%${stateCustomer.id}%`
+            }
+        }
+
+        const customers = await CustomerModel.findAll({ 
+            where,
+            include: [{
+                model: StateModel,
+                as: 'estado',
+                attributes: ['id', 'nombre_estado']
+            }]
+        });
 
         if (customers.length === 0) {
-            return res.status(404).send({ error: "No hay clientes." });
+            return res.status(404).send({ error: "No se encontraron clientes que coincidan con los criterios de búsqueda." });
         }
 
         res.status(200).send({ customers });
@@ -129,6 +188,7 @@ const readCustomers = async (req, res) => {
         res.status(500).send({ error: "Error interno del servidor." });
     }
 };
+
 
 /**
  * Función para actualizar datos del cliente
