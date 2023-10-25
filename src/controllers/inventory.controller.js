@@ -1,3 +1,4 @@
+const Sequelize = require('sequelize');
 const InventoryModel = require('../models/inventory');
 const EmployeeModel = require('../models/employee');
 const ProductModel = require('../models/product');
@@ -16,6 +17,20 @@ const readInventories = async (req, res) => {
     try {
         const { query } = req;
         const where = {};
+
+        if (query.tipo_movimiento) {
+            where.tipo_movimiento = {
+                [Sequelize.Op.like]: `%${query.tipo_movimiento}%`
+            };
+        }
+
+        if (query.cantidad_movimiento) {
+            where.cantidad_movimiento = query.cantidad_movimiento;
+        }
+
+        if (query.monto_movimiento) {
+            where.monto_movimiento = query.monto_movimiento;
+        }
 
         const inventory = await InventoryModel.findAll({
             where,
