@@ -2,6 +2,7 @@ const { DataTypes } = require('sequelize');
 const db = require('../database/db_connection');
 const Empleado = require('../models/employee');
 const Proveedor = require('../models/supplier');
+const Estado = require('./state');
 
 /**
  * Creación del modelo Factura_Compra
@@ -9,7 +10,8 @@ const Proveedor = require('../models/supplier');
  * Autor: Hector Armando García González
  * Referencias:
  *              Modelo Empleado (employee.js),
- *              Modelo Proveedor (supplier.js)
+ *              Modelo Proveedor (supplier.js),
+ *              Modelo Estado (state.js)
  */
 
 const Factura_Compra = db.define(`JHSGR_Factura_Compra`, {
@@ -30,6 +32,14 @@ const Factura_Compra = db.define(`JHSGR_Factura_Compra`, {
         allowNull: false,
         references: {
             model: `JHSGR_Proveedors`,
+            key: 'id'
+        }
+    },
+    ID_Estado_FK: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: {
+            model: `JHSGR_Estados`,
             key: 'id'
         }
     }
@@ -71,6 +81,24 @@ Proveedor.hasMany(Factura_Compra, {
 Factura_Compra.belongsTo(Proveedor, {
     foreignKey: 'ID_Proveedor_FK',
     as: 'proveedor'
+});
+
+/**
+ * Configurando la relación de uno a uno
+ * Fecha creación: 29/09/2023
+ * Autor: Hector Armando García González
+ * Referencia:
+ *              Modelo Factura_Compra (purchase_invoice.js) -> uno
+ *              Modelo Estado (state.js)  -> uno
+ */
+
+Estado.hasOne(Factura_Compra, {
+    foreignKey: 'ID_Estado_FK'
+});
+
+Factura_Compra.belongsTo(Estado, {
+    foreignKey: 'ID_Estado_FK',
+    as: 'estado'
 });
 
 module.exports = Factura_Compra;
