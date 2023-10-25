@@ -165,7 +165,9 @@ const changeSalesInvoiceProcess = async (req, res) => {
  * Referencias: 
  *              Modelo Factura_Venta (sales_invoice.js), 
  *              Modelo Detalle_Venta (sales_detail.js),
- *              Modelo Estado (state.js)
+ *              Modelo Producto (product.js),
+ *              Modelo Estado (state.js),
+ *              Modelo Inventario (inventory.js)
  */
 
 const changeSalesInvoiceComplete = async (req, res) => {
@@ -245,7 +247,7 @@ const changeSalesInvoiceComplete = async (req, res) => {
         //*************Se podría implementar una lógica para enviar el correo de que ya fue completado su pedido */
         res.status(200).send({ msg: "Venta completada." });
     } catch (error) {
-        res.status(500).send({ error: error.message });
+        res.status(500).send({ error: "Error interno del servidor." });
     }
 };
 

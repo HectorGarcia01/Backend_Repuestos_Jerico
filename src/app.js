@@ -14,6 +14,7 @@ const brandProductRoutes = require('./routes/brand_product.routes');
 const productLocation = require('./routes/product_location.routes');
 const productRoutes = require('./routes/product.routes');
 const salesInvoiceRoutes = require('./routes/sales_invoice.routes');
+const purchaseInvoiceRoutes = require('./routes/purchase_invoice.routes');
 const inventoryRoutes = require('./routes/inventory.routes');
 // const kpiRoutes = require('./routes/kpi.routes');
 
@@ -54,6 +55,7 @@ app.use(brandProductRoutes);
 app.use(productLocation);
 app.use(productRoutes);
 app.use(salesInvoiceRoutes);
+app.use(purchaseInvoiceRoutes);
 app.use(inventoryRoutes);
 // app.use(kpiRoutes);
 

@@ -31,15 +31,11 @@ const buildWhereClause = async (query) => {
     }
 
     if (query.precio_compra) {
-        where.precio_compra = {
-            [Sequelize.Op.gte]: query.precio_compra
-        };
+        where.precio_compra = query.precio_compra;
     }
 
     if (query.precio_venta) {
-        where.precio_venta = {
-            [Sequelize.Op.gte]: query.precio_venta
-        };
+        where.precio_venta = query.precio_venta;
     }
 
     if (query.descripcion) {
@@ -121,7 +117,7 @@ const buildWhereClause = async (query) => {
 
         where.ID_Ubicacion_FK = productLocation.id;
     }
-    
+
     return where;
 }
 

@@ -140,7 +140,7 @@ const readShoppingCart = async (req, res) => {
     } catch (error) {
         res.status(500).send({ error: "Error interno del servidor." });
     }
-}
+};
 
 /**
  * Función para eliminar un producto del detalle del carrito de compras
@@ -214,6 +214,7 @@ const deleteProductIdShoppingCart = async (req, res) => {
  * Referencias: 
  *              Modelo Factura_Venta (sales_invoice.js), 
  *              Modelo Detalle_Venta (sales_detail.js),
+ *              Modelo Producto (product.js),
  *              Modelo Estado (state.js)
  */
 
