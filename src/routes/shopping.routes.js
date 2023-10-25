@@ -10,7 +10,7 @@ const {
     shoppingHistory,
     shoppingHistoryId
 } = require('../controllers/shopping.controller');
-// const { shoppingSchema, updateShoppingSchema } = require('../schemas/shopping.schema');
+const { shoppingSchema } = require('../schemas/shopping.schema');
 const validateMiddleware = require('../middlewares/validate');
 const authMiddleware = require('../middlewares/auth');
 const roleMiddleware = require('../middlewares/check_role');
@@ -19,7 +19,7 @@ router.post(
     '/usuario/carrito/agregar',
     authMiddleware,
     roleMiddleware('User'),
-    // validateMiddleware(userSchema),
+    validateMiddleware(shoppingSchema),
     createShoppingCart
 );
 router.get('/usuario/carrito/ver', authMiddleware, roleMiddleware('User'), readShoppingCart);
