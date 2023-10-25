@@ -169,7 +169,7 @@ const updateSupplierId = async (req, res) => {
         const { id } = req.params;
         const updates = Object.keys(req.body);
 
-        const allowedUpdates = ['nombre', 'apellido', 'telefono', 'correo'];
+        const allowedUpdates = ['nombre', 'apellido', 'empresa', 'telefono', 'correo'];
         const isValidOperation = updates.every((update) => allowedUpdates.includes(update));
 
         if (!isValidOperation) {
