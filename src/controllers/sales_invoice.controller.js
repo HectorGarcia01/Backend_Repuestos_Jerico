@@ -166,7 +166,8 @@ const changeSalesInvoiceProcess = async (req, res) => {
  *              Modelo Factura_Venta (sales_invoice.js), 
  *              Modelo Detalle_Venta (sales_detail.js),
  *              Modelo Producto (product.js),
- *              Modelo Estado (state.js)
+ *              Modelo Estado (state.js),
+ *              Modelo Inventario (inventory.js)
  */
 
 const changeSalesInvoiceComplete = async (req, res) => {
