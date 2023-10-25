@@ -217,8 +217,80 @@ const deleteProductIdPurchaseInvoice = async (req, res) => {
     }
 };
 
+/**
+ * Función para eliminar la compra en proceso
+ * Fecha creación: 29/09/2023
+ * Autor: Hector Armando García González
+ * Referencias: 
+ *              Modelo Factura_Compra (purchase_invoice.js), 
+ *              Modelo Detalle_Compra (purchase_detail.js),
+ *              Modelo Estado (state.js)
+ */
+
+const deletePurchaseInvoiceProcess = async (req, res) => {
+    try {
+        const { user } = req;
+
+        const statePurchaseInvoice = await StateModel.findOne({
+            where: {
+                nombre_estado: "En proceso"
+            }
+        });
+
+        if (!statePurchaseInvoice) {
+            return res.status(404).send({ error: "Estado no encontrado." });
+        }
+
+        const purchaseInvoice = await PurchaseInvoiceModel.findOne({
+            where: {
+                ID_Empleado_FK: user.id,
+                ID_Estado_FK: statePurchaseInvoice.id
+            },
+            include: [{
+                model: PurchaseDetailModel,
+                as: 'detalles_compra',
+                include: {
+                    model: ProductModel,
+                    as: 'producto',
+                }
+            }]
+        });
+
+        if (!purchaseInvoice) {
+            return res.status(404).send({ error: "Carrito de compras vacío." });
+        }
+
+        const inactivePurchaseInvoice = await StateModel.findOne({
+            where: {
+                nombre_estado: "Cancelado"
+            }
+        });
+
+        if (!inactivePurchaseInvoice) {
+            return res.status(404).send({ error: "Estado no encontrado." });
+        }
+
+        for (const detail of purchaseInvoice.detalles_compra) {
+            const product = await ProductModel.findByPk(detail.producto.id);
+
+            if (product) {
+                product.cantidad_stock -= detail.cantidad_producto;
+                await product.save();
+            }
+        }
+
+        purchaseInvoice.ID_Estado_FK = inactivePurchaseInvoice.id;
+        await purchaseInvoice.save();
+
+        res.status(200).send({ msg: "La compra ha sido cancelada con éxito." });
+    } catch (error) {
+        res.status(500).send({ error: "Error interno del servidor." });
+    }
+};
+
 module.exports = {
     createPurchaseInvoice,
     readPurchaseInvoiceProcess,
-    deleteProductIdPurchaseInvoice
+    deleteProductIdPurchaseInvoice,
+    deletePurchaseInvoiceProcess
 }
