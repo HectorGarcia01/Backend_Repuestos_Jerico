@@ -14,7 +14,6 @@ const Proveedor = db.define('JHSGR_Proveedor', {
     nombre: {
         type: DataTypes.STRING(30),
         allowNull: false,
-        unique: true
     },
     apellido: {
         type: DataTypes.STRING(30),
@@ -23,7 +22,6 @@ const Proveedor = db.define('JHSGR_Proveedor', {
     empresa: {
         type: DataTypes.STRING(50),
         allowNull: false,
-        unique: true
     },
     telefono: {
         type: DataTypes.STRING(8),
