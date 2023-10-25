@@ -187,7 +187,11 @@ const updateSupplierId = async (req, res) => {
         await supplier.save();
         res.status(200).send({ msg: "Datos actualizados con éxito." });
     } catch (error) {
-        res.status(500).send({ error: "Error interno del servidor." });
+        if (error instanceof Sequelize.UniqueConstraintError) {
+            res.status(400).send({ error: "¡El proveedor ya existe!" });
+        } else {
+            res.status(500).send({ error: "Error interno del servidor." });
+        }
     }
 };
 
