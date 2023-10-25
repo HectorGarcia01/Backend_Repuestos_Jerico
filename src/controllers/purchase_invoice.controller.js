@@ -100,6 +100,59 @@ const createPurchaseInvoice = async (req, res) => {
     }
 };
 
+/**
+ * Función para ver todo el detalle del carrito de compras
+ * Fecha creación: 29/09/2023
+ * Autor: Hector Armando García González
+ * Referencias: 
+ *              Modelo Factura_Compra (purchase_invoice.js), 
+ *              Modelo Detalle_Compra (purchase_detail.js),
+ *              Modelo Producto (product.js),
+ *              Modelo Estado (state.js)
+ */
+
+const readPurchaseInvoiceProcess = async (req, res) => {
+    try {
+        const { user } = req;
+        const statePurchaseInvoice = await StateModel.findOne({
+            where: {
+                nombre_estado: 'Pendiente'
+            }
+        });
+
+        if (!statePurchaseInvoice) {
+            return res.status(404).send({ error: "Estado no encontrado." });
+        }
+
+        const purchaseInvoice = await PurchaseInvoiceModel.findOne({
+            where: {
+                ID_Empleado_FK: user.id,
+                ID_Estado_FK: statePurchaseInvoice.id
+            },
+            attributes: ['id', 'total_factura'],
+            include: [{
+                model: PurchaseDetailModel,
+                as: 'detalles_compra',
+                attributes: ['id', 'cantidad_producto', 'precio_unitario', 'subtotal_compra'],
+                include: {
+                    model: ProductModel,
+                    as: 'producto',
+                    attributes: ['id', 'nombre_producto', 'descripcion_producto']
+                }
+            }]
+        });
+
+        if (!purchaseInvoice) {
+            return res.status(404).send({ error: "Carrito de compras vacío." });
+        }
+
+        res.status(200).send({ purchaseInvoice });
+    } catch (error) {
+        res.status(500).send({ error: "Error interno del servidor." });
+    }
+}
+
 module.exports = {
-    createPurchaseInvoice
+    createPurchaseInvoice,
+    readPurchaseInvoiceProcess
 }
