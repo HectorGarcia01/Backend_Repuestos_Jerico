@@ -1,4 +1,4 @@
-require('dotenv').config({ path: `.dev.env` });
+require('dotenv').config({ path: `.local.env` });
 
 //Exportando las variables de entorno
 module.exports = {
@@ -7,5 +7,6 @@ module.exports = {
     USERNAME_DB: process.env.USERNAME_DB,
     PASSWORD_DB: process.env.PASSWORD_DB,
     HOST_DB: process.env.HOST_DB,
-    KEY_TOKEN: process.env.KEY_TOKEN
+    KEY_TOKEN: process.env.KEY_TOKEN,
+    RECAPTCHA: process.env.RECAPTCHA
 };
