@@ -3,7 +3,8 @@ const router = new express.Router();
 const {
     createPurchaseInvoice,
     readPurchaseInvoiceProcess,
-    deleteProductIdPurchaseInvoice
+    deleteProductIdPurchaseInvoice,
+    deletePurchaseInvoiceProcess
 } = require('../controllers/purchase_invoice.controller');
 // const { shoppingSchema } = require('../schemas/shopping.schema');
 // const validateMiddleware = require('../middlewares/validate');
@@ -20,6 +21,7 @@ router.post(
 );
 router.get('/superAdmin/ver/compra/proceso', authMiddleware, roleMiddleware('SuperAdmin'), readPurchaseInvoiceProcess);
 router.delete('/superAdmin/compra/eliminar/producto/:id', authMiddleware, roleMiddleware('SuperAdmin'), deleteProductIdPurchaseInvoice);
+router.delete('/superAdmin/eliminar/compra/proceso', authMiddleware, roleMiddleware('SuperAdmin'), deletePurchaseInvoiceProcess);
 
 //Configuración de rutas (endpoints) para el Admin
 router.post(
@@ -31,5 +33,6 @@ router.post(
 );
 router.get('/admin/ver/compra/proceso', authMiddleware, roleMiddleware('Admin'), readPurchaseInvoiceProcess);
 router.delete('/admin/compra/eliminar/producto/:id', authMiddleware, roleMiddleware('Admin'), deleteProductIdPurchaseInvoice);
+router.delete('/admin/eliminar/compra/proceso', authMiddleware, roleMiddleware('Admin'), deletePurchaseInvoiceProcess);
 
 module.exports = router;
