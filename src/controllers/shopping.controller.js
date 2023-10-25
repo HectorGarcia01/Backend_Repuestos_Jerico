@@ -140,7 +140,7 @@ const readShoppingCart = async (req, res) => {
     } catch (error) {
         res.status(500).send({ error: "Error interno del servidor." });
     }
-}
+};
 
 /**
  * Función para eliminar un producto del detalle del carrito de compras
