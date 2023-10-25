@@ -165,6 +165,7 @@ const changeSalesInvoiceProcess = async (req, res) => {
  * Referencias: 
  *              Modelo Factura_Venta (sales_invoice.js), 
  *              Modelo Detalle_Venta (sales_detail.js),
+ *              Modelo Producto (product.js),
  *              Modelo Estado (state.js)
  */
 
