@@ -93,7 +93,6 @@ Inventario.prototype.toJSON = function () {
 
     delete inventory.ID_Empleado_FK;
     delete inventory.ID_Producto_FK;
-    delete inventory.createdAt;
     delete inventory.updatedAt;
 
     return inventory;
