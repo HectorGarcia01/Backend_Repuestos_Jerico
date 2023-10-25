@@ -2,6 +2,7 @@ const PurchaseInvoiceModel = require('../models/purchase_invoice');
 const PurchaseDetailModel = require('../models/purchase_detail');
 const SupplierModel = require('../models/supplier');
 const ProductModel = require('../models/product');
+const InventoryModel = require('../models/inventory');
 const StateModel = require('../models/state');
 
 /**
@@ -224,6 +225,7 @@ const deleteProductIdPurchaseInvoice = async (req, res) => {
  * Referencias: 
  *              Modelo Factura_Compra (purchase_invoice.js), 
  *              Modelo Detalle_Compra (purchase_detail.js),
+ *              Modelo Producto (product.js),
  *              Modelo Estado (state.js)
  */
 
@@ -288,9 +290,95 @@ const deletePurchaseInvoiceProcess = async (req, res) => {
     }
 };
 
+/**
+ * Función para procesar compra y generar inventario
+ * Fecha creación: 29/09/2023
+ * Autor: Hector Armando García González
+ * Referencias: 
+ *              Modelo Factura_Compra (purchase_invoice.js),
+ *              Modelo Detalle_Compra (purchase_detail.js),
+ *              Modelo Producto (product.js),
+ *              Modelo Estado (state.js),
+ *              Modelo Inventario (inventory.js)
+ */
+
+const changePurchaseInvoiceComplete = async (req, res) => {
+    try {
+        const { user } = req;
+
+        const statePurchaseInvoice = await StateModel.findOne({
+            where: {
+                nombre_estado: "En proceso"
+            }
+        });
+
+        if (!statePurchaseInvoice) {
+            return res.status(404).send({ error: "Estado no encontrado." });
+        }
+
+        const purchaseInvoice = await PurchaseInvoiceModel.findOne({
+            where: {
+                ID_Empleado_FK: user.id,
+                ID_Estado_FK: statePurchaseInvoice.id
+            },
+            attributes: ['id', 'total_factura'],
+            include: [{
+                model: PurchaseDetailModel,
+                as: 'detalles_compra',
+                attributes: ['id', 'cantidad_producto', 'precio_unitario', 'subtotal_compra'],
+                include: {
+                    model: ProductModel,
+                    as: 'producto',
+                    attributes: ['id', 'nombre_producto', 'descripcion_producto']
+                }
+            }]
+        });
+
+        if (!purchaseInvoice) {
+            return res.status(404).send({ error: "Compra no encontrada." });
+        }
+
+        const changeSalesStatus = await StateModel.findOne({
+            where: {
+                nombre_estado: "Completado"
+            }
+        });
+
+        if (!changeSalesStatus) {
+            return res.status(404).send({ error: "Estado no encontrado." });
+        }
+
+        for (const purchaseDetail of purchaseInvoice.detalles_compra) {
+            const product = await ProductModel.findByPk(purchaseDetail.producto.id);
+
+            if (product) {
+                const inventoryEntry = await InventoryModel.create({
+                    tipo_movimiento: 'Compra',
+                    cantidad_movimiento: purchaseDetail.cantidad_producto,
+                    monto_movimiento: purchaseInvoice.total_factura,
+                    ID_Empleado_FK: user.id,
+                    ID_Producto_FK: product.id,
+                });
+
+                if (!inventoryEntry) {
+                    return res.status(500).send({ error: "Error al crear el registro de inventario." });
+                }
+            }
+        }
+
+        purchaseInvoice.ID_Estado_FK = changeSalesStatus.id;
+        await purchaseInvoice.save();
+
+        res.status(200).send({ msg: "Compra completada." });
+    } catch (error) {
+        res.status(500).send({ error: "Error interno del servidor." });
+    }
+};
+
 module.exports = {
     createPurchaseInvoice,
     readPurchaseInvoiceProcess,
     deleteProductIdPurchaseInvoice,
-    deletePurchaseInvoiceProcess
+    deletePurchaseInvoiceProcess,
+    changePurchaseInvoiceComplete
 }
