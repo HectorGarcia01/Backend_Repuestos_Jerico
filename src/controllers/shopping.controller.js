@@ -17,7 +17,12 @@ const { Sequelize } = require('sequelize');
 const createShoppingCart = async (req, res) => {
     try {
         const { user } = req;
-        const { ID_Producto_FK, cantidad_producto } = req.body;
+        const { ID_Producto_FK } = req.body;
+        let { cantidad_producto } = req.body;
+
+        if (typeof cantidad_producto === 'string') {
+            cantidad_producto = parseFloat(cantidad_producto);
+        }
 
         const product = await ProductModel.findByPk(ID_Producto_FK);
 
