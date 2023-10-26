@@ -46,11 +46,18 @@ const createProductBrand = async (req, res) => {
  * Autor: Hector Armando García González
  * Referencias:
  *              Modelo Marca de Producto (brand_product.js), 
+ *              Modelo Estado (state.js)
  */
 
 const readProductBrands = async (req, res) => {
     try {
-        const productBrands = await ProductBrandModel.findAll({});
+        const productBrands = await ProductBrandModel.findAll({
+            include: [{
+                model: StateModel,
+                as: 'estado',
+                attributes: ['id', 'nombre_estado']
+            }]
+        });
 
         if (productBrands.length === 0) {
             return res.status(404).send({ error: "No hay marcas de productos registradas." });
@@ -67,13 +74,20 @@ const readProductBrands = async (req, res) => {
  * Fecha creación: 02/09/2023
  * Autor: Hector Armando García González
  * Referencias:
- *              Modelo Marca de Producto (brand_product.js)
+ *              Modelo Marca de Producto (brand_product.js),
+ *              Modelo Estado (state.js)
  */
 
 const readProductBrandId = async (req, res) => {
     try {
         const { id } = req.params;
-        const productBrand = await ProductBrandModel.findByPk(id);
+        const productBrand = await ProductBrandModel.findByPk(id, {
+            include: [{
+                model: StateModel,
+                as: 'estado',
+                attributes: ['id', 'nombre_estado']
+            }]
+        });
 
         if (!productBrand) {
             return res.status(404).send({ error: "Marca de producto no encontrada." });

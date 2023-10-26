@@ -169,7 +169,7 @@ const updateSupplierId = async (req, res) => {
         const { id } = req.params;
         const updates = Object.keys(req.body);
 
-        const allowedUpdates = ['nombre', 'apellido', 'telefono', 'correo'];
+        const allowedUpdates = ['nombre', 'apellido', 'empresa', 'telefono', 'correo'];
         const isValidOperation = updates.every((update) => allowedUpdates.includes(update));
 
         if (!isValidOperation) {
@@ -187,7 +187,11 @@ const updateSupplierId = async (req, res) => {
         await supplier.save();
         res.status(200).send({ msg: "Datos actualizados con éxito." });
     } catch (error) {
-        res.status(500).send({ error: "Error interno del servidor." });
+        if (error instanceof Sequelize.UniqueConstraintError) {
+            res.status(400).send({ error: "¡El proveedor ya existe!" });
+        } else {
+            res.status(500).send({ error: "Error interno del servidor." });
+        }
     }
 };
 
