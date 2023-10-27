@@ -214,7 +214,7 @@ const updateShoppingCart = async (req, res) => {
 
         if (shoppingCartDetail) {
             shoppingCartDetail.cantidad_producto = cantidad_producto;
-            shoppingCartDetail.subtotal_venta += subtotal_venta;
+            shoppingCartDetail.subtotal_venta = subtotal_venta;
             await shoppingCartDetail.save();
         } else {
             shoppingCartDetail = await SalesDetailModel.create({
