@@ -5,6 +5,7 @@ const MunicipalityModel = require('../models/municipality');
 const RoleModel = require('../models/role');
 const StateModel = require('../models/state');
 const TokenModel = require('../models/token');
+const { accountActivationEmail } = require('../email/activate_account');
 
 /**
  * Función para crear un nuevo cliente
@@ -84,6 +85,7 @@ const createCustomer = async (req, res) => {
             ID_Cliente_FK: addCustomer.id
         });
 
+        accountActivationEmail(addCustomer.correo, token);
         res.status(201).send({ msg: "Se ha registrado con éxito." });
     } catch (error) {
         if (error instanceof Sequelize.UniqueConstraintError) {
