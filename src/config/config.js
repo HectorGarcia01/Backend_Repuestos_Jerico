@@ -8,5 +8,9 @@ module.exports = {
     PASSWORD_DB: process.env.PASSWORD_DB,
     HOST_DB: process.env.HOST_DB,
     KEY_TOKEN: process.env.KEY_TOKEN,
-    RECAPTCHA: process.env.RECAPTCHA
+    RECAPTCHA: process.env.RECAPTCHA,
+    CLIENT_ID_MAIL: process.env.CLIENT_ID_MAIL,
+    CLIENT_SECRET_MAIL: process.env.CLIENT_SECRET_MAIL,
+    REDIRECT_URI_MAIL: process.env.REDIRECT_URI_MAIL,
+    REFRESH_TOKEN_MAIL: process.env.REFRESH_TOKEN_MAIL
 };
