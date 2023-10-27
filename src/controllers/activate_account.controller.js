@@ -4,6 +4,7 @@ const CustomerModel = require('../models/customer');
 const EmployeeModel = require('../models/employee');
 const StateModel = require('../models/state');
 const TokenModel = require('../models/token');
+const RoleModel = require('../models/role');
 const welcomeEmail = require('../email/welcome_email');
 
 /**
@@ -12,7 +13,8 @@ const welcomeEmail = require('../email/welcome_email');
  * Autor: Hector Armando García González
  * Referencias: 
  *              Modelo Cliente (customer.js), 
- *              Modelo Empleado (employee.js), 
+ *              Modelo Empleado (employee.js),
+ *              Modelo Rol (role.js),
  *              Modelo Estado (state.js),
  *              Modelo Token (token.js),
  *              Función para enviar un correo de bienvenida (welcome_email.js)
@@ -27,6 +29,12 @@ const activateUserAccount = async (req, res) => {
         const userToken = req.header('Authorization').replace('Bearer ', '');
         const decodedToken = jwt.verify(userToken, KEY_TOKEN);
 
+        const userRole = await RoleModel.findOne({
+            where: {
+                nombre_rol: decodedToken.role
+            }
+        });
+
         const stateCustomer = await StateModel.findOne({
             where: {
                 nombre_estado: 'Pendiente'
@@ -36,7 +44,7 @@ const activateUserAccount = async (req, res) => {
         const customer = await CustomerModel.findOne({
             where: {
                 id: decodedToken.id,
-                ID_Rol_FK: id,
+                ID_Rol_FK: userRole.id,
                 ID_Estado_FK: stateCustomer.id
             }
         });
@@ -44,7 +52,7 @@ const activateUserAccount = async (req, res) => {
         const user = customer || await EmployeeModel.findOne({
             where: {
                 id: decodedToken.id,
-                ID_Rol_FK: id,
+                ID_Rol_FK: userRole.id,
                 ID_Estado_FK: stateCustomer.id
             }
         });
