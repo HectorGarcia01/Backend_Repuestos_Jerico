@@ -111,9 +111,16 @@ Empleado.prototype.generateAuthToken = (id, role) => {
  */
 
 Empleado.prototype.findByCredentials = async (correo, password) => {
+    const { id } = await Estado.findOne({
+        where: {
+            nombre_estado: 'Activo'
+        }
+    });
+
     const employee = await Empleado.findOne({
         where: {
-            correo
+            correo,
+            ID_Estado_FK: id
         }
     });
 
