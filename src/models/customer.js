@@ -149,9 +149,16 @@ Cliente.prototype.generateAuthToken = (id, role) => {
  */
 
 Cliente.prototype.findByCredentials = async (correo, password) => {
+    const { id } = await Estado.findOne({
+        where: {
+            nombre_estado: 'Activo'
+        }
+    });
+
     const customer = await Cliente.findOne({
         where: {
-            correo
+            correo,
+            ID_Estado_FK: id
         },
         include: [{
             model: Municipio,
