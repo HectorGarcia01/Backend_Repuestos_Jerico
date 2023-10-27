@@ -3,6 +3,7 @@ const router = new express.Router();
 const {
     createShoppingCart,
     readShoppingCart,
+    updateShoppingCart,
     deleteProductIdShoppingCart,
     deleteShoppingCart,
     processCustomerSale,
@@ -21,6 +22,13 @@ router.post(
     roleMiddleware('User'),
     validateMiddleware(shoppingSchema),
     createShoppingCart
+);
+router.patch(
+    '/usuario/carrito/actualizar/producto',
+    authMiddleware,
+    roleMiddleware('User'),
+    validateMiddleware(shoppingSchema),
+    updateShoppingCart
 );
 router.get('/usuario/carrito/ver', authMiddleware, roleMiddleware('User'), readShoppingCart);
 router.get('/usuario/historial/compras', authMiddleware, roleMiddleware('User'), shoppingHistory);
