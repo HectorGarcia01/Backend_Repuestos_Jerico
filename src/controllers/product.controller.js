@@ -200,7 +200,26 @@ const readProductsPagination = async (req, res) => {
 const readProductId = async (req, res) => {
     try {
         const { id } = req.params;
-        const product = await ProductModel.findByPk(id);
+        const product = await ProductModel.findByPk(id, {
+            include: [{
+                model: CategoryModel,
+                as: 'categoria',
+                attributes: ['id', 'nombre_categoria']
+            }, {
+                model: BrandProductModel,
+                as: 'marca',
+                attributes: ['id', 'nombre_marca']
+            }, {
+                model: ProductLocationModel,
+                as: 'ubicacion_categoria',
+                attributes: ['id', 'nombre_estanteria']
+            },
+            {
+                model: StateModel,
+                as: 'estado',
+                attributes: ['id', 'nombre_estado']
+            }]
+        });
 
         if (!product) {
             return res.status(404).send({ error: "Producto no encontrado." });
