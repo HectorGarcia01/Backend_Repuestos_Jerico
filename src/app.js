@@ -18,8 +18,12 @@ const salesInvoiceRoutes = require('./routes/sales_invoice.routes');
 const purchaseInvoiceRoutes = require('./routes/purchase_invoice.routes');
 const inventoryRoutes = require('./routes/inventory.routes');
 // const kpiRoutes = require('./routes/kpi.routes');
+const path = require('path');
 
 const app = express();
+
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'email/views'));
 
 //Conexión a la base de datos
 (async () => {
