@@ -15,8 +15,9 @@ const { accountActivationEmail } = require('../email/activate_account');
  *              Modelo Cliente (customer.js), 
  *              Modelo Municipio (municipality.js), 
  *              Modelo Rol (role.js), 
- *              Modelo Estado (state.js)
- *              Modelo Token (token.js)
+ *              Modelo Estado (state.js),
+ *              Modelo Token (token.js),
+ *              Función para enviar correo de activación de cuenta (activate_account.js)
  */
 
 const createCustomer = async (req, res) => {
@@ -85,7 +86,7 @@ const createCustomer = async (req, res) => {
             ID_Cliente_FK: addCustomer.id
         });
 
-        accountActivationEmail(addCustomer.correo, token);
+        await accountActivationEmail(addCustomer.correo, token);
         res.status(201).send({ msg: "Se ha registrado con éxito." });
     } catch (error) {
         if (error instanceof Sequelize.UniqueConstraintError) {
