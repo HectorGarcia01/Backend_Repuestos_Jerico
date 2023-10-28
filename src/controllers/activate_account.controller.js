@@ -76,7 +76,7 @@ const activateUserAccount = async (req, res) => {
         user.ID_Estado_FK = newStateCustomer.id;
         await user.save();
 
-        welcomeEmail(user.correo);
+        await welcomeEmail(user.correo);
         res.status(200).send({ msg: "Tu cuenta ha sido activada, ya puedes iniciar sesión." });
     } catch (error) {
         res.status(500).send({ error: "Error interno del servidor." });
