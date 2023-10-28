@@ -1,4 +1,4 @@
-const { PORT } = require('./config/config');
+const { PORT, SSL_CERT_FILE, SSL_KEY_FILE } = require('./config/config');
 const express = require('express');
 const db = require('./database/db_connection');
 const seedData = require('./controllers/seed_data.controller');
@@ -19,6 +19,8 @@ const purchaseInvoiceRoutes = require('./routes/purchase_invoice.routes');
 const inventoryRoutes = require('./routes/inventory.routes');
 // const kpiRoutes = require('./routes/kpi.routes');
 const path = require('path');
+const fs = require('fs');
+const https = require('https');
 
 const app = express();
 
@@ -74,7 +76,15 @@ app.get('*', (req, res) => {
     });
 });
 
+const server = https.createServer(
+    {
+        key: fs.readFileSync(SSL_KEY_FILE), 
+        cert: fs.readFileSync(SSL_CERT_FILE)
+    },
+    app
+);
+
 //Inicializando el servidor 
-app.listen(PORT, () => {
+server.listen(PORT, () => {
     console.log(`Servidor inicializado en el puerto: ${PORT}`);
 });
