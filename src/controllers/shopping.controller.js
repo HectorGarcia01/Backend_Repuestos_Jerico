@@ -3,6 +3,7 @@ const SalesDetailModel = require('../models/sales_detail');
 const ProductModel = require('../models/product');
 const StateModel = require('../models/state');
 const { Sequelize } = require('sequelize');
+const sendPurchaseDetail = require('../email/purchase_detail');
 
 /**
  * Función para agregar productos en el carrito de compras
@@ -423,10 +424,11 @@ const processCustomerSale = async (req, res) => {
         salesInvoice.numero_orden = orden;
         salesInvoice.ID_Estado_FK = stateSalesInvoice.id;
         await salesInvoice.save();
+        await sendPurchaseDetail(user.correo);
 
         res.status(200).send({ msg: `Compra procesada con éxito, tu número de orden es ${orden}.`, orden });
     } catch (error) {
-        res.status(500).send({ error: "Error interno del servidor." });
+        res.status(500).send({ error: error.message });
     }
 };
 
