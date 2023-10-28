@@ -100,7 +100,8 @@ Empleado.beforeCreate(async (employee) => {
  */
 
 Empleado.prototype.generateAuthToken = (id, role) => {
-    const token = jwt.sign({ id: id.toString(), role }, KEY_TOKEN);
+    const expiresIn = '2d';
+    const token = jwt.sign({ id: id.toString(), role }, KEY_TOKEN, { expiresIn });
     return token;
 };
 

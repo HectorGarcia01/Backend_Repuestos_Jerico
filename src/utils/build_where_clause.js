@@ -70,7 +70,7 @@ const buildWhereClause = async (query) => {
         });
 
         if (!stateCustomer) {
-            return res.status(404).send({ error: "Estado no encontrado." });
+            throw new Error("Estado no encontrado.");
         }
 
         where.ID_Estado_FK = stateCustomer.id
@@ -79,12 +79,12 @@ const buildWhereClause = async (query) => {
     if (query.categoria) {
         const category = await CategoryModel.findOne({
             where: {
-                nombre_categoria: query.categoria
+                id: query.categoria
             }
         });
 
         if (!category) {
-            return res.status(404).send({ error: "Categoría no encontrada." });
+            throw new Error("Categoría no encontrada.");
         }
 
         where.ID_Categoria_FK = category.id;
@@ -98,7 +98,7 @@ const buildWhereClause = async (query) => {
         });
 
         if (!brandProduct) {
-            return res.status(404).send({ error: "Marca no encontrada." });
+            throw new Error("Marca no encontrada.");
         }
 
         where.ID_Marca_FK = brandProduct.id;
@@ -112,7 +112,7 @@ const buildWhereClause = async (query) => {
         });
 
         if (!productLocation) {
-            return res.status(404).send({ error: "Ubicación no encontrada." });
+            throw new Error("Ubicación no encontrada.");
         }
 
         where.ID_Ubicacion_FK = productLocation.id;

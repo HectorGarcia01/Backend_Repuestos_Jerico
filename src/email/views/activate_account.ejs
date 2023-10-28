@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <title>Activación de cuenta de usuario.</title>
+        <link rel="stylesheet" href="../public/css/styles.css">
+    </head>
+    <body>
+        <table class="container">
+            <tr>
+                <td class="content" align="center">
+                    <table class="inner" style="background-color: #ffffff;">
+                        <tr>
+                            <td align="center">
+                                <h1>
+                                    Bienvenido a nuestro servicio. 
+                                </h1>
+                                <p style="margin-top: 20px;">
+                                    Estás a un paso de activar tu cuenta.
+                                </p>
+                                <h3 style="margin-top: 20px;">Para activar tu cuenta, ingresa el siguiente token:</h3>
+                                <a class="button" href="http://ec2-18-222-69-228.us-east-2.compute.amazonaws.com/authentication/activation-mail">
+                                    <%= userToken %>
+                                </a>
+                                <p style="margin-top: 20px;">
+                                    Una vez que ingreses el token, tu cuenta estará activada y podrás comenzar a disfrutar de nuestros servicios. <br>
+                                    El token solo estará disponible 2 días.
+                                </p>
+                                <a style="margin-top: 20px;" class="button" href="http://ec2-18-222-69-228.us-east-2.compute.amazonaws.com/authentication/activation-mail">
+                                    Activar cuenta
+                                </a>
+                                <a style="margin-top: 20px;" class="button" href="http://ec2-18-222-69-228.us-east-2.compute.amazonaws.com">
+                                    Visita nuestro sitio web
+                                </a>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td class="content" align="center">
+                    <table class="inner" style="background-color: #ffffff;">
+                        <tr>
+                            <td align="center">
+                                <p>Si necesitas ponerte en contacto con nosotros, no dudes en utilizar las siguientes opciones:</p>
+                                <a class="button" href="https://wa.me/50245392280">WhatsApp</a>
+                                <a class="button"
+                                    href="https://www.facebook.com/Repuestosjerico?mibextid=ZbWKwL">Facebook</a>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+    </body>
+</html>
