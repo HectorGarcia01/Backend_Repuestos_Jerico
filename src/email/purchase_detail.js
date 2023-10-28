@@ -4,7 +4,7 @@ const path = require('path');
 
 const sendPurchaseDetail = async (destination) => {
     try {
-        const pathHTML = path.join(__dirname, 'views/purchase.html');
+        const pathHTML = path.join(__dirname, 'views/purchase.ejs');
         const html = fs.readFileSync(pathHTML, 'utf8');
 
         const mailOptions = {
