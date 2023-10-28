@@ -3,6 +3,7 @@ const EmployeeModel = require('../models/employee');
 const RoleModel = require('../models/role');
 const StateModel = require('../models/state');
 const TokenModel = require('../models/token');
+const { accountActivationEmail } = require('../email/activate_account');
 
 /**
  * Función para crear un nuevo empleado
@@ -11,8 +12,9 @@ const TokenModel = require('../models/token');
  * Referencias: 
  *              Modelo Empleado (employee.js), 
  *              Modelo Rol (role.js), 
- *              Modelo Estado (state.js)
- *              Modelo Token (token.js)
+ *              Modelo Estado (state.js),
+ *              Modelo Token (token.js),
+ *              Función para enviar correo de activación de cuenta (activate_account.js)
  */
 
 const createEmployee = async (req, res) => {
@@ -63,6 +65,7 @@ const createEmployee = async (req, res) => {
             ID_Empleado_FK: addEmployee.id
         });
 
+        await accountActivationEmail(addEmployee.correo, token);
         res.status(201).send({ msg: "Se ha registrado con éxito." });
     } catch (error) {
         if (error instanceof Sequelize.UniqueConstraintError) {
